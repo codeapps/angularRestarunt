@@ -1,0 +1,21 @@
+<section class="container">
+    <div>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div><button mat-raised-button color="primary" (click)="fnTakenBackup()">BackUp</button></div>
+        </div>
+    </div>
+    <div fxLayoutGap="10px" class="entry-box">
+        <div fxFlex="50">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="30px">
+                <mat-label>Example Path</mat-label>
+                <mat-label>Folder  Path</mat-label>
+            </div>
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="16px">
+                <mat-label>D:\Files</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput [(ngModel)]="backupFolderPath">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</section>

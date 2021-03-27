@@ -1,0 +1,7 @@
+<section class="container">
+    <div *ngIf="datalist && datalist.length" fxFlex='100%' fxLayout="column" fxLayoutGap='10px'>
+        <app-report-content [dataSource]='datalist' [ReportHeadName]='strReportHeadName'
+            (valueChange)='myPageChange()'>
+        </app-report-content>
+    </div>
+</section>

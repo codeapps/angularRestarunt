@@ -1,0 +1,71 @@
+<section fxLayout="column" fxLayoutGap='10px' style="margin-top: 20px; margin-left: 10px; margin-right: 10px;">
+    <div fxLayout="column" *ngIf="!showReport" fxLayoutGap='10px'>
+        <div fxLayout="row" fxLayout.lt-sm="column" ngStyle.gt-sm="border-bottom: 1px solid #ccc;">
+            <div fxLayoutGap='10px' fxLayout.lt-sm="column" fxLayoutAlign.lt-sm='center center' class="box_fts">
+                <mat-form-field appearance='outline'>
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="from" placeholder="Choose FromDate" [(ngModel)]='fromDate'>
+                    <!-- (dateChange)='fnPurchaseGets()' -->
+                    <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                    <mat-datepicker #from></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance='outline'>
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" [(ngModel)]='toDate'>
+                    <!-- (dateChange)='fnPurchaseGets()' -->
+                    <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+                    <mat-datepicker #topicker></mat-datepicker>
+                </mat-form-field>
+
+
+            </div>
+
+            <div fxFlex fxLayoutAlign.gt-sm='end center' fxLayoutAlign.lt-sm='center start' fxLayoutGap='10px'>
+                <mat-spinner diameter='20' color='warn' *ngIf="loading"></mat-spinner>
+                <button mat-raised-button color='primary' (click)="fnSubmit()">submit</button>
+            </div>
+        </div>
+        <!-- //start -->
+        <div fxFlex='100' fxLayout="column" fxLayoutGap='10px'>
+
+            <div fxLayout='row'>
+                <mat-tab-group fxFlex='100' color='warn' [selectedIndex]='selectedTab'
+                    (selectedIndexChange)='fntabChange($event)'>
+                    <mat-tab *ngFor="let tab of tabBills" [label]="tab">
+
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+
+            <div fxLayout='row' fxLayoutAlign="space-evenly start" *ngIf="selectedTab != '8'">
+
+                <div fxLayout.lt-sm='column' fxLayoutGap='10px'>
+                    <mat-checkbox *ngFor="let item of billSeries" [(ngModel)]="item.checked" color='warn'>
+                        {{item.PurBillSerPrefix}}</mat-checkbox>
+                </div>
+
+                <mat-radio-group [(ngModel)]="dateInvo" fxLayout.lt-sm='column' fxLayoutGap='10px' color='warn'
+                    *ngIf="selectedTab != '4'">
+                    <mat-radio-button value='Yes'>InvoiceDate</mat-radio-button>
+                    <mat-radio-button value='No'>EnterDate</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-radio-group [(ngModel)]="stateType" fxLayoutAlign="end" fxLayout.lt-sm='column' fxLayoutGap='10px'
+                    color='warn' *ngIf="selectedTab == '0' || selectedTab == '1'">
+                    <mat-radio-button value='Yes'>LOCAL</mat-radio-button>
+                    <mat-radio-button value='No'>INTERSTATE</mat-radio-button>
+                </mat-radio-group>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showReport" fxLayout="column" fxLayoutGap='10px'>
+        <app-report-content [dataSource]='dataRep' [ReportHeadName]='strReportHeadName'
+            (valueChange)='myPageChange($event)'>
+        </app-report-content>
+    </div>
+</section>

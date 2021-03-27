@@ -1,0 +1,185 @@
+<section class="container">
+    <div *ngIf="createFlag && !backFlag" fxLayout="column" fxLayoutGap="50px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30%">
+            <div fxLayout="row" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="fnsubmit()">Submit</button>
+                <button mat-raised-button color="primary" (click)="fnBack()">Back To List</button>
+                <button mat-raised-button color="primary">Booking User</button>
+            </div>
+            <div class="btn-color" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
+                <button mat-flat-button
+                    style="background-color: silver"></button><span>Available&nbsp;({{strCount}})</span>
+                <button mat-flat-button style="background-color: red;"></button><span>Booked</span>
+                <button mat-flat-button style="background-color: green;"></button><span>Selected</span>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px">
+            <div *ngFor="let Floor of floors; let i = index;" style="display: -webkit-box;">
+                <div fxLayout="column" fxLayoutGap="10px">
+                    <span>
+                        {{Floor.Floor_Name}}&nbsp;&nbsp;({{Floor.Total}})
+                    </span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <div class="button-row" *ngFor="let Room of RoomsDetail[i]; let j= index;">
+                            <label id={{Room.Room_Id}} class="mat-flat-button"
+                                [ngClass]="{'booked' :  Room.Room_IsBook == 'Yes', 'selected': Room.select == true}">
+                                <input type="checkbox" class="input-check" [checked]="Room.select"
+                                [(ngModel)]="Room.select"  (change)="getCkeckedRoomDetail(Room, j, $event)" value="Room.Room_Id"
+                                    style="display:none;" />
+                                <span>{{Room.Room_No}}</span><br>
+                                <span class="room-type">{{Room.RoomType_Name}}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag && !backFlag">
+        <div fxLayout="column" fxLayoutGap="30px">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="fnHome()">Home</button>
+                <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+                <button mat-raised-button color="primary" (click)="openLoginDialog(tempDataForAddRoom)">AddRoom</button>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                <div fxLayout="column" fxFlex="48" fxLayoutGap="10px">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Customer Name</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.CustomerName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Customer Address</mat-label>
+                        <textarea matInput [(ngModel)]="registrationSource.CustAddress"></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email Id</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.Email">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Mobile No</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.Phone">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Identification</mat-label>
+                        <mat-select [(ngModel)]="registrationSource.Identification_Id">
+                            <mat-option *ngFor="let item of identification" [value]="item.IdentificationId">
+                                {{item.IdentificationName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Identification Desciption</mat-label>
+                        <textarea matInput [(ngModel)]="registrationSource.Identification"></textarea>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="column" fxFlex="48" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <mat-form-field fxFlex="48" appearance='outline'>
+                            <mat-label>Check In Date</mat-label>
+                            <input matInput [min]="today" [matDatepicker]="checkin"
+                                [(ngModel)]='registrationSource.CheckInDate'>
+                            <mat-datepicker-toggle matSuffix [for]="checkin"></mat-datepicker-toggle>
+                            <mat-datepicker #checkin></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" fxFlex="48">
+                            <mat-label>Check In Time</mat-label>
+                            <input matInput [(ngModel)]="TodayTime" readonly>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <mat-form-field appearance='outline' fxFlex="48">
+                            <mat-label>Check Out Date</mat-label>
+                            <input matInput [min]="today" [matDatepicker]="checkout"
+                                [(ngModel)]='registrationSource.CheckoutDate' (dateChange)="fnDateChange()">
+                            <mat-datepicker-toggle matSuffix [for]="checkout"></mat-datepicker-toggle>
+                            <mat-datepicker #checkout></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" fxFlex="48">
+                            <mat-label>Check Out Time</mat-label>
+                            <input matInput [(ngModel)]="TodayTime" readonly>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Childs</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.Childs">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Adults</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.Adults">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>No Of Days</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.NoOfDays" readonly>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Advance Amount</mat-label>
+                        <input matInput [(ngModel)]="registrationSource.Registration_AdvanceAmt">
+                    </mat-form-field>
+
+                    <div>
+                        <div fxFlex="100" class="tbl-report mat-elevation-z8 report">
+                            <table>
+                                <thead>
+                                    <th>RoomNo</th>
+                                    <th>RoomType</th>
+                                    <th>FloorName</th>
+                                    <th>RoomRent</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of roomBookingDetails">
+                                        <td>{{item.Room_No}}</td>
+                                        <td>{{item.RoomType_Name}}</td>
+                                        <td>{{item.Floor_Name}}</td>
+                                        <td>{{item.RoomType_Rent}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="backFlag" fxLayout="column" fxLayoutGap="10px">
+        <div fxLayout="row" fxFlex="100" fxLayoutAlign="start start" fxLayoutGap="gappx">
+            <div fxFlex="20">
+                <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+            </div>
+            <div fxFlex="78" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here</mat-label>
+                    <input matInput (keyup)="fnSearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Customer Name</th>
+                            <th>Customer Address</th>
+                            <th>Email</th>
+                            <th>Mobile No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of roomRegistrationList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.CustomerName}}</td>
+                            <td>{{item.CustAddress}}</td>
+                            <td>{{item.Email}}</td>
+                            <td>{{item.Phone}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

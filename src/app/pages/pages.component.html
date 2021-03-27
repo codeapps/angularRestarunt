@@ -1,0 +1,61 @@
+  <mat-sidenav-container class="side-container">
+
+    <mat-sidenav  #sidenav [autoFocus]='false' [mode]="mode" [opened]='opened' class="side-inner">
+        <perfect-scrollbar [config]="config" [usePSClass]='true' [scrollIndicators]="true">
+
+            <app-left-sidebar></app-left-sidebar>
+          </perfect-scrollbar>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <mat-toolbar>
+            <mat-toolbar-row fxLayoutAlign='space-between center'>
+
+                <button mat-icon-button (click)="sidenav.toggle()" >
+                    <mat-icon >menu</mat-icon>
+                </button>
+
+                <div fxLayout='row' fxLayoutGap='25px' fxLayoutAlign='end center' class="right-header">
+
+                  <!-- <div fxLayoutAlign='start center' class="search-container">
+                    <input placeholder="search here.." type="search">
+                    <span class="material-icons">
+                      search
+                      </span>
+                  </div> -->
+                <button mat-icon-button matTooltip='New message'>
+                  <mat-icon matBadge="0" matBadgeColor="warn">
+                    mail
+                  </mat-icon>
+                </button>
+
+                <button mat-icon-button matTooltip='Calculator' (click)="openCalculator()">
+                 <mat-icon>settings_cell</mat-icon>
+                </button>
+
+                <button mat-icon-button matTooltip='Notification'>
+                  <mat-icon matBadge="0" matBadgeColor="warn">
+                    notifications_none
+                  </mat-icon>
+                </button>
+
+                  <button mat-icon-button (click)="logout()" matTooltip='Sign out'>
+                  <mat-icon>
+                    power_settings_new
+                  </mat-icon>
+                </button>
+                  <!-- <span matBadge="15" matBadgeColor="warn" class="material-icons rt-icons">
+                    mail
+                    </span>
+
+                    <span class="material-icons rt-icons">
+                      notifications_none
+                      </span> -->
+                </div>
+            </mat-toolbar-row>
+
+          </mat-toolbar>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+

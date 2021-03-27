@@ -1,0 +1,30 @@
+.container {
+  margin-top: 20px;
+  margin-left: 20px;
+
+  .tbl-report {
+
+    table {
+      th {
+        background: #673ab7;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.report {
+  overflow: hidden;
+
+  th {
+    mat-checkbox {
+      margin-left: -16px;
+    }
+  }
+}
+.action-btn{
+  height: 150px;
+ button{
+   height: 70px;
+ }
+}

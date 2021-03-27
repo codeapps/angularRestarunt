@@ -1,0 +1,28 @@
+<section>
+    <div class="container">
+        <div fxLayout="column" fxLayoutGap="40px">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <div>
+                    <button mat-raised-button color="primary" (click)="fnSaveMenuList()">Save</button>
+                </div>
+                <div fxFlex="30">
+                    <mat-form-field appearance="outline">
+                        <mat-label>User</mat-label>
+                        <mat-select name="food" [(ngModel)]="ddlUser" (selectionChange)="fnMenuGets()">
+                            <mat-option [value]="1">SuperAdmin</mat-option>
+                            <mat-option [value]="2">Admin</mat-option>
+                            <mat-option [value]="3">Manager</mat-option>
+                            <mat-option [value]="4">Staff</mat-option>
+                            <mat-option [value]="5">Rep</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div id='treeparent'>
+                <ejs-treeview #treeview="" id='treeelement' [fields]='field' [showCheckBox]='showCheckBox'
+                    (nodeChecked)='nodeChecked($event)'></ejs-treeview>
+            </div>
+        </div>
+    </div>
+</section>

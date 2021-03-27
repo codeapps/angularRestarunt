@@ -1,0 +1,56 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+            <div fxFlex="94" fxLayoutAlign="end end">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fngetAllCategoryHead()">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Category Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let category of categoryHeadList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(category)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{category.CategoryHeadName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div *ngIf="!createFlag" class="created">  
+        <div fxLayout="column" fxFlex="100" fxLayoutGap="20px">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" fxFlex="100">
+                <button mat-raised-button color="primary" (click)="fnBack()">Back</button>
+                <button mat-raised-button color="primary" (click)="fnClear()">Reset</button>
+                <button mat-raised-button color="primary" (click)="fnSaveandUpdate()">Save</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="10px" fxFlex="100">
+                <mat-form-field appearance="outline" fxFlex="80">
+                    <mat-label>CategoryHead Name</mat-label>
+                    <input matInput [(ngModel)]="categoryheadSource.CategoryHeadName">
+                </mat-form-field>
+                <mat-form-field appearance="outline" fxFlex="80">
+                    <mat-label>CategoryHead Description</mat-label>
+                    <input matInput [(ngModel)]="categoryheadSource.CategoryHeadDescription">
+                </mat-form-field>
+            </div>      
+        </div>   
+    </div>
+</section>

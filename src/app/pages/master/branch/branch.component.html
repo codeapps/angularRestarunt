@@ -1,0 +1,175 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="80" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Branch Name</th>
+                            <th>Branch Code</th>
+                            <th>Branch Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of Branch">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.BranchName}}</td>
+                            <td>{{item.BranchCode}}</td>
+                            <td>{{item.BranchAdr1}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="BackToList()">Back</button>
+        </div>
+        <div fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Branch Code</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchCode">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Branch Name</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchName">
+                </mat-form-field>               
+                <mat-form-field appearance="outline">
+                    <mat-label>Address1</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchAdr1">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address2</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchAdr2">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address3</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchAdr3">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Msg1</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchFtr1">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Msg2</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchFtr2">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Msg3</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchFtr3">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>CST No1</mat-label>
+                    <input matInput [(ngModel)]="branchSource.CSTNo1">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>State</mat-label>
+                   <mat-select [(ngModel)]="branchSource.BranchStateName" (selectionChange)="fnStateChangeEvent($event)">
+                       <mat-option *ngFor="let item of state" [value]="item.StateName">{{item.StateName}}</mat-option>
+                   </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Account No</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchBankAcNo">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>IFSC No</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchIfsccode">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Pan No</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchPanCardNo">
+                </mat-form-field>                
+                <mat-form-field appearance="outline">
+                    <mat-label>BarCode Address</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchField1">
+                </mat-form-field>
+                <mat-form-field *ngIf="userpass" appearance="outline">
+                    <mat-label>User Name</mat-label>
+                    <input matInput [(ngModel)]="UserName">
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Phone</mat-label>
+                    <input matInput [(ngModel)]="branchSource.Phone">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Fax</mat-label>
+                    <input matInput [(ngModel)]="branchSource.Fax">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Mail</mat-label>
+                    <input matInput [(ngModel)]="branchSource.Mail">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Mail Password</mat-label>
+                    <input matInput [(ngModel)]="branchSource.MailPwd">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>GSTIN</mat-label>
+                    <input matInput >
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tin No</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>DLN No1</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>DLN No2</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>State Code</mat-label>
+                   <mat-select [(ngModel)]="branchSource.BranchStateCode">
+                       <mat-option *ngFor="let item of state" [value]="item.State_Code">{{item.State_Code}}</mat-option>
+                   </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Bank Name</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchBankName">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Bank Address1</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchBankAddr1">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Bank Address2</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BranchBankAddr2">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>BarCode Header</mat-label>
+                    <input matInput [(ngModel)]="branchSource.BarCodeHeaderName">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>BarCode Address</mat-label>
+                    <input matInput >
+                </mat-form-field>
+                <mat-form-field *ngIf="userpass" appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input matInput [(ngModel)]="Password">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</section>

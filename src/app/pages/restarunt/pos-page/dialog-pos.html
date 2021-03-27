@@ -1,0 +1,19 @@
+<h1 mat-dialog-title style="color: #23a089">Tender Cash</h1>
+<section mat-dialog-content>
+    <div fxLayout="column" fxLayoutGap='15px'>
+        <mat-form-field appearance='outline'>
+          <mat-label>Amount Paid</mat-label>
+          <input matInput #myinput [(ngModel)]="Amount" (input)="fngetTotal()" (keydown.enter)="onNoClick()"/>
+        </mat-form-field>
+
+        <div fxLayout='row' fxLayoutAlign='space-between start'  fxLayoutGap='10px'>
+          <h3 style="font-weight: 500; color: darkgreen;">Bill Amount:&nbsp;<b>{{billAmount}}</b></h3>
+          <h3 style="font-weight: 500; color: chocolate;">Balance:&nbsp;<b>{{Balance}}</b></h3>
+        </div>
+      </div>
+</section>
+
+<div mat-dialog-actions fxLayoutAlign='end start' fxLayoutGap='10px'>
+  <button mat-button color="primary" (click)="onNoClick()">Okay</button>
+  <button mat-button color="warn" (click)="dialogRef.close()">Close</button>
+</div>

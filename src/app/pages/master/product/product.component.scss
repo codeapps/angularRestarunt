@@ -1,0 +1,31 @@
+.container {
+  margin-top: 20px;
+  margin-left: 20px;
+
+  .tbl-report {
+
+    table {
+      th {
+        background: #673ab7;
+        color: #fff;
+      }
+    }
+  }
+
+  .entry-box {
+    margin-top: 20px;
+    margin-bottom: 30px;
+
+    .stock-check {
+      margin-bottom: 22px !important;
+      margin-top: 9px;
+    }
+  }
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}

@@ -1,0 +1,14 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">           
+            <button mat-raised-button color="primary" (click)="fnOutstandingLeaderCompare()">Submit</button>
+        </div>
+    </div>
+    <div>
+        <div *ngIf="!createFlag" fxFlex='100%' fxLayout="column" fxLayoutGap='10px'>
+            <app-report-content [dataSource]='datalist' [ReportHeadName]='strReportHeadName'
+                (valueChange)='myPageChange()'>
+            </app-report-content>
+        </div>
+    </div>
+</section>

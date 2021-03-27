@@ -1,0 +1,60 @@
+::ng-deep .mat-dialog-container{
+  overflow: visible !important;
+  .close-btn-outer{
+      position: relative;
+      button{
+          position: absolute;
+          right: -44px;
+          top: -44px;
+      }
+  }
+
+}
+
+.container {
+  padding: 10px;
+  .select-type {
+    .mat-form-field {
+      margin-top: -4px !important;
+    }
+  }
+
+  .tbl-report {
+
+    table {
+      th {
+        background: #673ab7;
+        color: #fff;
+      }
+    }
+  }
+
+  .entry-box {
+    margin-top: 20px;
+  }
+}
+
+.report {
+  overflow: hidden;
+
+  th {
+    background-color: #3f51b5;
+    text-align: center;
+  }
+
+  td:first-child {
+    text-align: left;
+  }
+
+  td:last-child {
+    text-align: center;
+  }
+}
+.outstanding{
+  margin-top: 10px;
+}
+.select-billseries{
+  h3{
+    margin-bottom: 0px;
+  }
+}

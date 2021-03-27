@@ -1,0 +1,162 @@
+<section class="container">
+    <mat-tab-group>
+        <mat-tab label="Settings">
+            <div fxLayout='column' fxLayoutGap='15px' class="settings-container">
+                <div fxLayoutAlign="space-between center">
+                  <div fxLayout='row'>
+                    <button mat-raised-button color='primary' matTooltip="Save" (click)="fnSaveGeneralSettings()"
+                      >Save</button>
+                  </div>
+                </div>
+              </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="50px" class="settings-container">              
+                <div fxLayout="column" fxFlex="20" fxLayoutAlign="start start" fxLayoutGap="30px">
+                    <label>Sales In Inclusive :</label>
+                    <label>Sales ROF :</label>
+                    <label>Report Print Type :</label>
+                    <label>Expiry Print Type :</label>
+                    <label>Kot Print Type :</label>
+                    <label>Redierect Login :</label>
+                    <label>Products Allowed :</label>
+                   
+                    <!-- <label >AccountHead Allowed : :</label> -->
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="26px">
+                    <div>
+                        <mat-radio-group class="rdobtn" fxLayoutGap='10px' aria-label="Select an option"
+                            [(ngModel)]="SalesInInclusive" color='warn'>
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div>
+                        <mat-radio-group class="rdobtn" fxLayoutGap='10px' aria-label="Select an option"
+                            [(ngModel)]="salesROF" color='warn'>
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div>
+                        <select class="select" [(ngModel)]="reportPrintType" class="selreporttype">
+                            <option value="LinePrint">Line Print</option>
+                            <option value="Laser">Laser</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select class="select" [(ngModel)]="ExpiryPrintType" class="selreporttype">
+                            <option value="LinePrint">Line Print</option>
+                            <option value="Laser">Laser</option>
+                        </select>
+                    </div>
+                    <div>
+                      <select class="select" [(ngModel)]="KotPrintType" class="selreporttype">
+                          <option value="LinePrint">Line Print</option>
+                          <option value="Laser">Laser</option>
+                      </select>
+                  </div>
+                    <div>
+                        <mat-radio-group  fxLayoutGap='10px' aria-label="Select an option"
+                            [(ngModel)]="RedierectToLogin" color='warn'>
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div>
+                        <mat-radio-group  fxLayoutGap='10px' aria-label="Select an option"
+                            [(ngModel)]="ProductsAllowed" color='warn'>
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div>
+                        <!-- <mat-radio-group style="margin-left: 40px;" fxLayoutGap='10px' aria-label="Select an option"
+                        [(ngModel)]="AccountHeadAllowed" color='warn'>
+                        <mat-radio-button value="Yes">Yes</mat-radio-button>
+                        <mat-radio-button value="No">No</mat-radio-button>
+                      </mat-radio-group> -->
+                    </div>
+                </div>
+            </div>
+
+
+        </mat-tab>
+        <mat-tab label="Branches">
+            <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="10px">
+                <div fxFlex="100" class="dd-Branches">
+                  <div fxFlex="30">
+                    <mat-form-field>
+                      <mat-label>Select Branches</mat-label>
+                      <mat-select [(ngModel)]="BranchId" (selectionChange)='fnChangeBranches($event.value)'>
+                        <mat-option [value]='item.BranchId' *ngFor="let item of branch">{{item.BranchName}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="branch-tbl">
+                  <div class="tbl-report mat-elevation-z8">
+                    <div class="inner-tab">
+                      <table border="1">
+                        <thead>
+                          <tr>
+                            <th>Sl No</th>
+                            <th>Staff Name</th>
+                            <th>Staff Phone</th>
+                            <th>Staff UserNAme</th>
+                            <th>Staff Password</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of AccountHeadGets;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{item.AcName}}</td>
+                            <td>{{item.Phone}}</td>
+                            <td> {{item.UserName}}</td>
+                            <td>{{item.Pwd}}</td>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </mat-tab>
+        <mat-tab label="Branch Delete">
+            <div>
+                <div fxLayout='row'>
+                  <div class="tblRow mat-elevation-z8">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Del</th>
+                          <th>No</th>
+                          <th>Branch Code</th>
+                          <th>Branch Name</th>
+                          <th>Branch Add</th>
+                          <th>Branch Phone</th>
+                          <th>Email</th>
+                        </tr>
+                      </thead>
+        
+                      <tbody>
+                        <tr *ngFor="let item of branch; let i = index">
+                          <td>
+                            <button (click)='removeRow(item)'>
+                              <span class="material-icons">
+                                delete_sweep
+                              </span>
+                            </button>
+                          </td>
+                          <td>{{i+1}}</td>
+                          <td>{{item.BranchCode}}</td>
+                          <td>{{item.BranchName}}</td>
+                          <td>{{item.BranchAdr1}}</td>
+                          <td>{{item.Phone}}</td>
+                          <td>{{item.Mail}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+        </mat-tab>
+    </mat-tab-group>
+</section>

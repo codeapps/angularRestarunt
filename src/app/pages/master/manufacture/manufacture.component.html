@@ -1,0 +1,122 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="80" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fnsearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Manufacture Name</th>
+                            <th>Address</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of allManufacture">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.Manufacture_Name}}</td>
+                            <td>{{item.Manufacture_Addr1}}</td>
+                            <td>{{item.Manufacture_Code}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="BackToList()">Back</button>
+            <button mat-raised-button color="primary" (click)="fnClear()">Reset</button>
+        </div>
+        <div  fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureName">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address1</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureAddr1">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address3</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureAddr3">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Fax</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureFax">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Web Address</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureWebaddress">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Code Prefix</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureProdCodeNextNo">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Inclusive Sales</mat-label>
+                    <mat-select [(ngModel)]="manufactureSource.ManufactureInclusiveSales">
+                        <mat-option value="No">No</mat-option>
+                        <mat-option value="Yes">Yes</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Code</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureMfrno">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address2</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureAddr2">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Phone</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufacturePhone">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>E-mail</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureEmail">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Transpoter</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureTransporter">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Manufcturer Group</mat-label>
+                    <mat-select [(ngModel)]="manufactureSource.ManufactureGrpId">                      
+                        <mat-option *ngFor="let item of ManufactureGroup" [value]="item.CategoryID">
+                            {{item.CategoryName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Nexe Code</mat-label>
+                    <input matInput [(ngModel)]="manufactureSource.ManufactureProdCodeNextNo">
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px">
+            <span>Active</span>
+            <mat-checkbox [(ngModel)]="manufactureSource.Active"></mat-checkbox>
+            <span>Sms</span>
+            <mat-checkbox></mat-checkbox>
+            <span>Mail</span>
+            <mat-checkbox></mat-checkbox>
+        </div>
+    </div>
+</section>

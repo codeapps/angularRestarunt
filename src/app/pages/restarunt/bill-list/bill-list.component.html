@@ -1,0 +1,74 @@
+<div fxLayout='column' style="padding: 10px;" fxLayoutGap='10px'>
+    <div fxLayout='row' fxLayout.lt-sm='column' fxLayoutGap='10px' fxFlex='100%'>
+
+        <mat-form-field appearance='outline' fxFlex='20%' fxFlex.lt-sm='100'>
+            <mat-label>From date</mat-label>
+            <input matInput [matDatepicker]="fromDate" (click)="fromDate.open()" [(ngModel)]="pFromDate"
+                (dateChange)='getIssues("")' readonly>
+            <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+            <mat-datepicker #fromDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance='outline' fxFlex='20%' fxFlex.lt-sm='100'>
+            <mat-label>To date</mat-label>
+            <input matInput [matDatepicker]="toDate" (click)="toDate.open()" (dateChange)='getIssues("")'
+                [(ngModel)]="pToDate" readonly>
+            <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+            <mat-datepicker #toDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance='outline' fxFlex='20%' fxFlex.lt-sm='100'>
+            <mat-select [(ngModel)]="strBillSerId" (selectionChange)='getIssues("")'>
+                <mat-option *ngFor="let item of billserice" [value]='item.BillSerId'>
+                    {{item.BillSerPrefix}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance='outline' fxFlex='30%' fxFlex.lt-sm='100'>
+            <mat-label>Search</mat-label>
+            <input matInput type="search" (input)='getIssues($event.target.value)'>
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
+    <div *ngIf="loading" fxLayoutAlign='center center' style="height: 500px;">
+        <mat-spinner strokeWidth='5' value='50'></mat-spinner>
+    </div>
+    <div *ngIf="billSource.length && !loading" fxLayout='row' class="mat-elevation-z8 table-bill_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>View</th>
+                    <th>No</th>
+                    <th>Bill No</th>
+                    <th>Bill Date</th>
+                    <th>Customer Name</th>
+                    <th>Mobile</th>
+                    <th>Total</th>
+                    <th>Cancel</th>
+                    <th>Print</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let bill of billSource; let i = index" [ngClass]="{'active-cancel': bill.Issue_Cancel}">
+                    <td class="icon-fa">
+                        <a class="material-icons" (click)="openDialog(bill)">create</a>
+                    </td>
+                    <td>{{i+1}}</td>
+                    <td>{{bill.BillSerPrefix}} -{{bill.Issues_BillNo}}</td>
+                    <td>{{bill.Issues_Date | date:'dd/MM/yyyy'}}</td>
+                    <td>{{bill.Issues_CustName}}</td>
+                    <td>{{bill.Issues_Mobile}}</td>
+                    <td>{{bill.Issues_Total}}</td>
+                    <td class="icon-fa">
+                        <a class="material-icons" (click)="fnCancel(bill)">delete</a>
+                    </td>
+                    <td class="icon-fa">
+                        <a class="material-icons" (click)="fnPrint(bill)">print</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

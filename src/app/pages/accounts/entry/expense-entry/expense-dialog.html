@@ -1,0 +1,17 @@
+<div fxLayout="row" fxLayoutAlign="end start">
+    <span (click)="fnClose()"  >
+        <mat-icon>highlight_off</mat-icon>
+    </span>    
+</div>
+<div fxLayout='column'>
+    <mat-form-field fxFlex='100' appearance='outline'>
+        <mat-label>Remarks</mat-label>
+        <textarea matInput [(ngModel)]="Remarks"  style="height: 160px;"></textarea>
+    </mat-form-field>
+    <div  fxLayoutAlign="end end">
+        <button mat-button color="warn" (click)="save()">
+            <mat-icon>input</mat-icon>
+            Submit
+        </button>
+    </div>
+</div>

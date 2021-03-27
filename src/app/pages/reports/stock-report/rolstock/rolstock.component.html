@@ -1,0 +1,9 @@
+<div fxLayoutAlign='center center'>
+    <h3 *ngIf="wait">please wait....</h3>
+    <h3 *ngIf="dataRep.length == 0 && !wait">No Reports Found !!!</h3>
+  </div>
+  <div fxLayout="column" fxLayoutGap='10px' *ngIf="dataRep && dataRep.length">
+    <app-report-content [dataSource]='dataRep' [ReportHeadName]='strReportHeadName' (valueChange)='myPageChange()'>
+    </app-report-content>
+  </div>
+  

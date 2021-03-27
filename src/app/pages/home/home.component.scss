@@ -1,0 +1,39 @@
+// .chart-container {
+
+// }
+.content-wrapper {
+  height: 100vh;
+  .content-image {
+    background-image: url('./../../../assets/image/banner1.jpg');
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    button {
+      background: #e15222;
+    color: #fff;
+    padding: 18px;
+    border: none;
+    font-weight: 600;
+    border: 2px solid #e15222;
+    cursor: pointer;
+    &:hover {
+      background: none;
+      color: #e15222;
+    }
+    }
+  }
+}
+
+.teme-color {
+  color: #e15222;
+}
+
+.h-250 {
+  height: 250px;
+}
+
+.header-card {
+  height: 110px;
+  overflow: hidden;
+}

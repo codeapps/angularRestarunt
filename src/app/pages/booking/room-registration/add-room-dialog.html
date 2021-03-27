@@ -1,0 +1,28 @@
+<div fxLayout="column" fxLayoutGap="20px">
+    <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px">
+        <div *ngFor="let Floor of floors; let i = index;" style="display: -webkit-box;">
+            <div fxLayout="column" fxLayoutGap="10px">
+                <span>
+                    {{Floor.Floor_Name}}&nbsp;&nbsp;({{Floor.Total}})
+                </span>
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <div class="button-row" *ngFor="let Room of RoomsDetail[i]; let j= index;">
+                        <label id={{Room.Room_Id}} class="mat-flat-button"
+                            [ngClass]="{'booked' :  Room.Room_IsBook == 'Yes'}"
+                            [style.backgroundColor]=" Room.select ? 'green': 'silver'">
+                            <input type="checkbox" class="input-check" [checked]="Room.select"
+                                (change)="getCkeckedRoomDetail(Room, j, $event)" value="Room.Room_Id"
+                                style="display:none;" />
+                            <span>{{Room.Room_No}}</span><br>
+                            <span class="room-type">{{Room.RoomType_Name}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row" fxFlex="100" fxLayoutAlign="end end" fxLayoutGap="20px">
+        <!-- <button mat-raised-button color="primary" (click)="fnContinue()">Continue</button> -->
+        <button mat-raised-button color="warn" (click)="onNoClick()">Close</button>
+    </div>
+</div>

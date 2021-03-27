@@ -1,0 +1,36 @@
+<section>
+    <div fxLayout="column" fxLayoutGap="15px">
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <h4>Card Details</h4>
+            <div>
+                <hr>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutGap="15px">
+            <mat-form-field appearance="outline">
+                <mat-label>Card Number</mat-label>
+                <input matInput [(ngModel)]="cardSource.cardNo">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Card Holder Name</mat-label>
+                <input matInput [(ngModel)]="cardSource.holdername">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Card Amount</mat-label>
+                <input matInput [(ngModel)]="cardSource.cardAmt">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Select bank</mat-label>
+              <mat-select [(ngModel)]="cardSource.bankId">
+                  <mat-option *ngFor="let item of accoundHedGetData" [value]="item.AC_Id">{{item.AC_Name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        <div fxLayout="column" fxLayoutGap="15px">
+            <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px">
+                <button mat-raised-button color="warn" (click)="onNoClick()">Close</button>
+                <button mat-raised-button color="primary" (click)="fnSettled()">Save</button>
+            </div>
+        </div>
+    </div>
+</section>

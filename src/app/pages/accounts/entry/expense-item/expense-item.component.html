@@ -1,0 +1,64 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="78" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of expenseItemList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.ExpenseItemName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag" fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnBack()">Back To List</button>
+            <button mat-raised-button color="primary" (click)="fnClear()">Reset</button>
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+        </div>
+        <div>
+            <div fxLayout="column" fxFlex="95" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="expenseItemSource.expenseItemName">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tax Name</mat-label>
+                    <mat-select [(ngModel)]="expenseItemSource.expenseItemTaxId">
+                        <mat-option *ngFor="let tax of taxList" [value]="tax.TaxGroupId">{{tax.TaxName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>HSN</mat-label>
+                    <input matInput [(ngModel)]="expenseItemSource.expenseItemHsnCode">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Code</mat-label>
+                    <input matInput [(ngModel)]="expenseItemSource.expenseItemCode">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</section>

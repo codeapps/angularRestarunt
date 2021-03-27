@@ -1,0 +1,43 @@
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+.mat-toolbar {
+  min-height: 50px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  .mat-toolbar-row {
+    height: 50px;
+    background: #4f4b6f;
+    color: #fff;
+  }
+}
+.side-container {
+    width: 100%;
+    height: 100%;
+    .side-inner {
+        width: 255px;
+    }
+  }
+
+.right-header {
+
+  .search-container {
+    position: relative;
+    input {
+        padding: 10px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    background: #e8dede;
+    outline: none;
+    width: 200px;
+
+    }
+    span {
+        position: absolute;
+        right: 11px;
+        color: #ff0018;
+    }
+  }
+     .rt-icons {
+         padding: 10px;
+     }
+}

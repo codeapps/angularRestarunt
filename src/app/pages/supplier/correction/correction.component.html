@@ -1,0 +1,262 @@
+<section fxLayout='column' >
+
+    <div fxLayout='row wrap' fxLayoutAlign='space-between center' class="wrapper-cont">
+      <div fxLayout='row wrap' fxLayoutGap='10px' >
+        <button (click)='fnSave()' >
+          <span>F2:&nbsp;</span>
+          Save
+      </button>
+        <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap" *ngIf="ddlCorrectionType == 'Product' || ddlCorrectionType == 'Company'">
+          <mat-label>{{ ddlCorrectionType == 'Product' ? "Product Search" : "Company Search" }}</mat-label>
+          <input #txtProduct id="txtProduct" placeholder="Search here.." autocomplete="off" [matTooltip]='productName'
+            (keyup)='fnProductSearch($event)' (keydown.enter)="txtProduct.blur()" [(ngModel)]="productName">
+        </div>
+  
+        <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap" *ngIf="ddlCorrectionType == 'Category'">
+          <mat-label>Choose&nbsp;Category</mat-label>
+          <select (change)='fnChangeCategory($event)'>
+            <option *ngFor="let category of categories" [value]='category.CategoryID'>{{category.CategoryName}}</option>
+          </select>
+        </div>
+  
+        <!-- <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap" *ngIf="ddlCorrectionType == 'Godown'">
+          <mat-label>Choose&nbsp;Godown</mat-label>
+          <select (change)='fnChangeGodown($event)'>
+            <option *ngFor="let godown of GodownList" [value]='godown.GodownId'>{{godown.GodownName}}</option>
+          </select>
+        </div> -->
+  
+        <!-- <button *ngIf="ddlCorrectionType == 'Category' && categoryId" (click)="fnWgtMechCode()">
+          MechCode
+        </button> -->
+  
+        <div fxFlex.lt-sm='100' fxFlex.gt-sm='15' fxLayout='column' class="col-wrap">
+          <mat-label>Code</mat-label>
+          <input (keyup)='fnStoreTaxDetailsGetOnBatchNo($event)'>
+        </div>
+        <div fxFlex.lt-sm='100' fxFlex.gt-sm='15' fxLayout='column' class="col-wrap">
+          <mat-label>Reason</mat-label>
+          <select [(ngModel)]="ddlReason">
+            <option value='0'>--select--</option>
+            <option *ngFor="let reason of reaonJson" [value]='reason.CategoryID'>{{reason.CategoryName}}
+            </option>
+          </select>
+        </div>
+        <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap">
+          <mat-label>Type</mat-label>
+          <select [(ngModel)]="ddlCorrectionType" (change)='fnChangeType($event)'>
+            <option value="All">All</option>
+            <option value="Product">Product</option>
+            <option value="Category">Category</option>
+            <option value="Company">Company</option>
+          </select>
+        </div>
+        <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap">
+          <mat-label>Price Menu</mat-label>
+          <select [(ngModel)]="ddlPriceMenu">
+            <option value='0'>--select--</option>
+            <option *ngFor="let price of priceMenu" [value]='price.PriceMenu_Id'>{{price.DisplayName}}
+            </option>
+          </select>
+        </div>
+      </div>
+  
+      <div  *ngIf="jsonData && jsonData.filteredData.length">
+        <div fxFlex.lt-sm='100' fxLayout='column' class="col-wrap" >
+          <mat-label>Search</mat-label>
+          <div fxLayoutAlign='start center' class="search-btn">
+            <input  type='search' (keyup)='OnSearch($event)'>
+            <span>
+              <mat-icon>search</mat-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  
+    <!-- <div class="status" style="font-size: 11px;" *ngIf="jsonData && jsonData.filteredData.length">
+          Showing <span>{{scroll.viewPortInfo.startIndex}}</span>
+          - <span>{{scroll.viewPortInfo.endIndex}}</span>
+          of <span>{{dynamicArray?.length}}</span>
+      </div> -->
+    <div fxLayout='row' *ngIf="jsonData && jsonData.filteredData.length">
+      <virtual-scroller #scroll class="tbl-div mat-elevation-z4" [items]="jsonData.filteredData" style="height: 75vh;">
+        <table class="tblGrid">
+          <thead #header>
+            <tr>
+              <ng-container *ngFor="let col of dynamicColumn">
+                <th *ngIf="col">
+                  {{col}}
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <div *ngIf="tableBuffer" style="width: 100%; display: table-caption;">
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
+          </div>
+  
+          <tbody #container>
+  
+            <ng-container *ngFor="let item of scroll.viewPortItems">
+              <tr *ngIf="item.groupFlag">
+                <td colspan="999" class="td-group">{{item.ItemDesc}}</td>
+              </tr>
+              <!-- <tr (click)="selection.select(item)"> -->
+              <tr>
+                <ng-container *ngFor="let col of dynamicColumn; let i = index">
+                  <td *ngIf="col == 'Save'">
+                    <mat-checkbox (click)="$event.stopPropagation();" (change)="$event ? selection.toggle(item) : null"
+                      [checked]="selection.isSelected(item)" color='warn'></mat-checkbox>
+                  </td>
+                  <td *ngIf="col == 'No'" class="tblSlNo">{{item.count + 1}}</td>
+                  <td *ngIf="col == 'PurNo'" class="tblSlNo">{{item.Store_ReceiptSlNo}}</td>
+                  <td *ngIf="col == 'InvNo'" class="tblInvNo">&nbsp;{{item.Store_InvoNo}}&nbsp;</td>
+                  <td *ngIf="col == 'InvDate'" class="tblInvDate">
+                    &nbsp;{{DateRet(item.Store_InvoDate)}}&nbsp;</td>
+                  <td *ngIf="col == 'Product'" class="tblProduct">&nbsp;{{item.ItemDesc}}&nbsp;</td>
+                  <td *ngIf="col == 'PurRate'" class="tblPurRate">
+                    <input type="text" (keyup)='fnPurRateWithTaxCalculationOnCurRow($event, item.count)'
+                      [(ngModel)]="item.Store_ReceiptRate" (keydown)='fnArrowKeyevent($event, i)'
+                      (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == 'LCost'" class="tblPurRate">
+                    <input type="text" (keyup)='fnPurRateCalculationOnCurRow($event, item.count)'
+                      [(ngModel)]="item.LandingCost" (keydown)='fnArrowKeyevent($event, i)'
+                      (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == 'RateCalc(%)'" class="tblPurRate">
+                    <input (keyup)='fnKeyvalid($event, item.count)' type="text"
+                      (keyup)='fnRetailRateCalulationOnMargin($event, item.count)' (keydown)='fnArrowKeyevent($event, i)'
+                      (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == lblRetailRateHead" class="tblSellRate">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.Store_SellRate"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == lblMRPHead" class="tblMRP">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.Store_MRP"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == 'Stock'" class="tblStock">{{item.Store_BalQty}}</td>
+                  <td *ngIf="col == 'Add'" class="tblAdd">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.add" id="txtAddQty{{item.count}}"
+                      [disabled]="!bQtyEditing" (keydown)='fnArrowKeyevent($event, i)' Qtytextbox />
+                  </td>
+                  <td *ngIf="col == 'Minus'" class="tblMinus">
+                    <input (keyup)='fnQtyChange($event, item.count,item)' [(ngModel)]="item.minus"
+                      [disabled]="!bQtyEditing" (keydown)='fnArrowKeyevent($event, i)' Qtytextbox>
+                  </td>
+                  <td *ngIf="col == lblWhRate" class="tblWholeSaleRate">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.Store_DisributRate"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == lblSpRate1 || col == 'SpRate1'" class="tblSPRateOne">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.SpRate1"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == lblSpRate2 || col == 'SpRate2'" class="tblSPRateTwo">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.SpRate2"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == lblSpRate3 || col == 'SpRate3'" class="tblSPRateThree">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.SpRate3"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == txtSPRATE4 || col == 'SpRate4'" class="tblSPRateFour">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.SpRate4"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == txtSPRATE5 || col == 'SpRate5'" class="tblSPRateFive">
+                    <input (keyup)='fnKeyvalid($event, item.count)' [(ngModel)]="item.SpRate5"
+                      (keydown)='fnArrowKeyevent($event, i)' (keypress)="numberOnly($event)">
+                  </td>
+                  <td *ngIf="col == 'ExpDate'" class="tblExpDate">
+                    <input pattern="[0-9]*" [maxlength]='explength' [(ngModel)]="item.Store_ExpDate"
+                      (keyup)='fnExpDateKey($event, item.count) ' (keydown)='fnArrowKeyevent($event, i)'>
+                  </td>
+                  <td *ngIf='col === strBatchDisplayName' class="tblBatch">
+                    <input (keyup)='fnKeyvalid($event, item.count)' type="text" [(ngModel)]="item.Store_Batch"
+                      (keydown)='fnArrowKeyevent($event, i)' />
+                  </td>
+                  <td *ngIf="col == 'Pack'" class="tblPack">{{item.Store_Pack}}</td>
+                  <td *ngIf="col == 'Banned'" class="tblBanned">
+                    <select [(ngModel)]="item.Store_IsBanned">
+                      <option selected="selected" value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </td>
+                  <td *ngIf="col == 'SchemeQty'" class="tblSchemeQty">{{item.Store_SchemeQty}}</td>
+                  <td *ngIf="col == 'SchemeFree'" class="tblSchemeFree">{{item.Store_SchemeFreQty}}</td>
+                  <td *ngIf="col == 'Supplier'" class="clsCorSupplier">
+                    {{item.SupplierName}}
+                  </td>
+                  <td *ngIf="col == 'Print'" (click)="fnShowPrintPop(item)">
+                    <mat-icon>print</mat-icon>
+                  </td>
+  
+                </ng-container>
+  
+              </tr>
+            </ng-container>
+  
+          </tbody>
+        </table>
+      </virtual-scroller>
+    </div>
+  
+    <div class="scautocomplete" *ngIf="selectcomplete">
+      <app-scodeautocomplete [fillterData]='fillterItems' (valueChange)='fnProductChange($event)'
+        [columnHeader]='colHeaders' [thHeader]='HeaderColumn'>
+      </app-scodeautocomplete>
+    </div>
+  
+    <div *ngIf="bPermissionPopupShow" class="password-popup mat-elevation-z8">
+      <div>
+        <h3>Confirm User Password</h3>
+        <div class="close">
+          <button mat-icon-button (click)="bPermissionPopupShow = false">
+            <mat-icon color='warn'>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput #pwd type='password'>
+          <mat-icon matSuffix>lock</mat-icon>
+  
+        </mat-form-field>
+      </div>
+      <div style="text-align: right;">
+        <button mat-flat-button color='primary' (click)=" fnAdminUserLogin(pwd.value)">Submit</button>
+      </div>
+    </div>
+  
+  
+    <div *ngIf="printPopup" class="print-popup mat-elevation-z8">
+      <div>
+        <h3>Print Pages</h3>
+        <div class="close">
+          <button mat-icon-button (click)="printPopup=false">
+            <mat-icon color='warn'>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Code</mat-label>
+          <input matInput [(ngModel)]="barCodeNo" disabled>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>No of Print</mat-label>
+          <input matInput [(ngModel)]="noOfPrint">
+        </mat-form-field>
+      </div>
+  
+      <div style="text-align: right;">
+        <button mat-button color='primary' (click)=" fnPrint()">submit</button>
+      </div>
+    </div>
+  </section>
+  

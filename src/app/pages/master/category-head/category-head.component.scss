@@ -1,0 +1,19 @@
+.container{
+    padding: 20px;
+    background: #fff;
+
+    .tbl-report{
+        table{
+            th{
+                background: #673ab7;
+                color: #fff;
+            }
+        }
+    }
+
+    .created{
+        .mat-form-field{
+            width: 80%;
+        }
+    }
+}

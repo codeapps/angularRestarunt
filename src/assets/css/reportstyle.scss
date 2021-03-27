@@ -1,0 +1,90 @@
+::ng-deep { 
+  $custom-main-color: #673ab7;
+   $custom-label-color: rgba(0, 0, 0, .6);
+   
+
+ // input outline color
+ .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: $custom-main-color !important;
+ }
+
+ .content {
+   padding-top: 15px;
+ }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .mat-form-field {
+    font-size: 13px;
+  };
+  .mat-form-field-flex>.mat-form-field-infix {
+    padding: 0.4em 0px !important;
+  }
+  .mat-form-field-label-wrapper {
+    top: -1.5em;
+  }
+  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: translateY(-1.1em) scale(.75);
+    width: 133.33333%;
+  }
+  
+    .box_fts {
+      transition: 300ms;
+    }
+  
+    .agent_div {
+
+        max-height: 400px;
+        overflow: auto;
+    
+        table {
+          width: 100%;
+    
+          .mat-header-row {
+            height: 40px;
+          }
+    
+          .mat-row {
+            height: 35px;
+          }
+        }
+      }
+
+    .right_div {
+      max-height: 400px;
+  
+      table {
+        width: 100%;
+        border-spacing: 0;
+  
+        th {
+          text-align: left;
+          height: 30px;
+          border-bottom: 1px solid rgba(0, 0, 0, .12);
+          font-size: 12px;
+          color: rgba(0, 0, 0, .54);
+          background-color: white;
+          z-index: 100;
+  
+        }
+  
+        th:first-child {
+          padding-left: 24px;
+        }
+  
+        td {
+          text-align: left;
+          height: 30px;
+          border-bottom: 1px solid rgba(0, 0, 0, .12);
+          font-size: 14px;
+          padding-right: 15px;
+        }
+  
+        td:first-child {
+          padding-left: 24px;
+        }
+      }
+    }
+}

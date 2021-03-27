@@ -1,0 +1,34 @@
+<div fxLayout='column' style="padding: 10px;" fxLayoutGap='10px'>
+    <div fxLayout='row'>
+        <button mat-flat-button color='primary'
+        (click)="fnKotBillGetOnTableDetailId()">Refresh</button>
+    </div>
+
+    <div fxLayout='row'  class="mat-elevation-z8 table-kotlist">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Bill No</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let  kot of kotListSource;let i = index">
+                    <td>{{ kot.No}}</td>
+                    <td>{{ kot.BillNo}}</td>
+                    <td>
+                        <span >{{ kot.ProductName}}</span>
+                        <span>{{ kot.TableDetail_Name}}</span>
+                        <span>{{ kot.Table_Name}}</span>
+                    </td>
+                    <td>{{ kot.Qty}}</td>
+                    <td>{{ kot.Amount}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

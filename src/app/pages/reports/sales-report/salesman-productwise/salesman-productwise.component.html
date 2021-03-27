@@ -1,0 +1,115 @@
+<section class="container">
+    <div *ngIf="createFlag" fxLayout="column">
+        <div *ngIf="createFlag" fxLayout="row" fxFlex="80" fxLayoutGap="20px">
+            <mat-form-field appearance='outline'>
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="from" [value]="date" (click)="from.open();" [(ngModel)]="fromDate">
+                <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                <mat-datepicker #from></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance='outline'>
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="to" [value]="date" (click)="to.open();" [(ngModel)]="toDate">
+                <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+                <mat-datepicker #to></mat-datepicker>
+            </mat-form-field>
+            <div class="btn-submit">
+                <button mat-raised-button color="primary" (click)="fngetReport()">Submit</button>
+            </div>
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div class="rdo-btn">
+            <mat-radio-group [(ngModel)]="rdoValue" (change)="fnChangeRdo($event)" fxLayoutGap="30px">
+                <mat-radio-button value="Summary">Summary</mat-radio-button>
+                <mat-radio-button value="Detailed">Detailed</mat-radio-button>
+                <mat-radio-button value="ProductWiseSalesDetailed">ProductWiseSalesDetailed</mat-radio-button>
+                <mat-radio-button value="ProductWiseSalesSummary">ProductWiseSalesSummary</mat-radio-button>
+                <mat-radio-button value="CategorywiseSales">CategorywiseSales</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" fxFlex="100">
+            <!-- <div fxFlex="50">
+                <mat-form-field style="width: 500px;"  appearance="outline">
+                    <mat-label>Serach SalesMan</mat-label>
+                    <input matInput [(ngModel)]="searchtext" (keyup)="fnSearchText($event)">
+                </mat-form-field>
+            </div>
+            <div fxFlex="50">
+                <mat-form-field *ngIf="categoryFlag"  appearance="outline">
+                    <mat-label>Serach Category</mat-label>
+                    <input matInput [(ngModel)]="searchtext" (keyup)="fnSearchText($event)">
+                </mat-form-field>
+            </div> -->
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px">
+            <div class="div-select mat-elevation-z8">
+                <div class="box-header">
+                    <table mat-table [dataSource]="dataSource">
+                        <ng-container matColumnDef="AC_Id">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    [aria-label]="checkboxLabel()">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="AC_Name">
+                            <th mat-header-cell *matHeaderCellDef>SalesMan Name</th>
+                            <td mat-cell *matCellDef="let row"> {{row.AC_Name}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+                    </table>
+                </div>
+            </div>
+            <div *ngIf="categoryFlag" class="div-select mat-elevation-z8">
+                <div class="box-header">
+                    <table mat-table [dataSource]="CatdataSource">
+                        <ng-container matColumnDef="CategoryID">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? CatmasterToggle() : null"
+                                    [checked]="Catselection.hasValue() && CatisAllSelected()"
+                                    [indeterminate]="Catselection.hasValue() && !CatisAllSelected()"
+                                    [aria-label]="CatcheckboxLabel()">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? Catselection.toggle(row) : null"
+                                    [checked]="Catselection.isSelected(row)" [aria-label]="CatcheckboxLabel(row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="CategoryName">
+                            <th mat-header-cell *matHeaderCellDef>Category Name</th>
+                            <td mat-cell *matCellDef="let row"> {{row.CategoryName}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="CatcolumnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: CatcolumnsToDisplay"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <div *ngIf="!createFlag" fxFlex='100%' fxLayout="column" fxLayoutGap='10px'>
+            <app-report-content [dataSource]='datalist' [ReportHeadName]='strReportHeadName'
+                (valueChange)='myPageChange()'>
+            </app-report-content>
+        </div>
+    </div>
+
+</section>

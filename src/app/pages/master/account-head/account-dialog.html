@@ -1,0 +1,29 @@
+<section mat-dialog-content>
+    <div fxLayout="column">
+        <div>
+            <h3>Login Section</h3>
+            <hr>
+        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>User Name</mat-label>
+            <input matInput [(ngModel)]="data.userName">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [(ngModel)]="data.password">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Password Confirmation</mat-label>
+            <input matInput [(ngModel)]="data.passwordconfirm">
+        </mat-form-field>
+        <div>
+            <hr>
+        </div>
+        <div fxLayoutAlign="end end">
+            <div fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="fnSubmit()">Submit</button>
+                <button mat-raised-button color="warn" (click)="onNoClick()">Close</button>
+            </div>
+        </div>
+    </div>
+</section>

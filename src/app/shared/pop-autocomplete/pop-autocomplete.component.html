@@ -1,0 +1,27 @@
+<div #dpanels class='pop-autocomplete'>
+
+
+<table>
+    <thead>
+      <tr>
+        <th></th>
+        <th *ngFor="let col of prodCodeColumn">
+          {{col}}
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of fillterProduct; let rowIdx = index" 
+      [ngClass]="{'active-pop': rowId === rowIdx}" (click)="popRowClick(item)">
+        <td>
+          <input type="text" />
+        </td>
+
+        <td *ngFor="let c of prodCodeHeaders">
+          {{item[c.col]}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

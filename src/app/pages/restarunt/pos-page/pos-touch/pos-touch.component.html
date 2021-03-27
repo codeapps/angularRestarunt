@@ -1,0 +1,59 @@
+<div fxFlexFill fxLayout='row'>
+
+<perfect-scrollbar fxFlex='20' style="max-width: 100%; max-height: 100%;" >
+  <div fxLayout='column' class="content-main">
+      <div matRipple class="categoryhead-touch" *ngFor="let cat of categoryHeadList;"
+        (click)='fnCategoryView(cat.CategoryHeadId)'>
+        <div fxFlex='100' class="col" fxLayoutAlign='center center'
+          [ngClass]="{'active-categoryhead': cat.CategoryHeadId == tempCategoryHeadID}">
+          <span>{{cat.CategoryHeadName}}</span>
+        </div>
+
+      </div>
+
+  </div>
+</perfect-scrollbar>
+
+<div fxLayout='column' fxFlex='80'>
+<perfect-scrollbar fxLayout='row' style="max-width: 100%; max-height: 140px;" [config]="scrollconfig">
+  <div fxLayout='row' class="content-main">
+    <div *ngIf="cateLoading" fxLayoutAlign='center center' style="height: 100%; width: 100%;">
+      <mat-spinner strokeWidth='5'></mat-spinner>
+    </div>
+    <div fxLayout='row wrap' fxLayoutAlign='start start' *ngFor="let item of category" class="minWidth">
+
+      <div matRipple fxFlex='16.66' class="category-touch " *ngFor="let cat of item"
+        (click)='fnProductView(cat.CategoryId)'>
+        <div fxFlex='100' class="col-cat" fxLayoutAlign='center center'
+          [ngClass]="{'active-category': cat.CategoryId == tempCategoryID}">
+          <span>{{cat.CategoryName}}</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</perfect-scrollbar>
+
+<perfect-scrollbar fxLayout='row' style="max-width: 100%; max-height: 100%" [config]="scrollconfig">
+  <div fxLayout='row' class="content-main">
+    <div *ngIf="prodloading" fxLayoutAlign='center center' style="height: 100%; width: 100%;">
+      <mat-spinner strokeWidth='5'></mat-spinner>
+    </div>
+
+    <div fxLayout='row wrap' fxLayoutAlign='start start' class="minWidth"
+      *ngFor="let item of productsArray;let i = index">
+
+      <div matRipple fxLayout='column' fxFlex='25' class="product-touch" *ngFor="let product of item;let j = index"
+        (click)="getProductDetails(product.ProductId)">
+
+        <div fxFlex='100' fxLayoutAlign='end center' fxLayoutAlign='center center' class="banner-img"
+          [ngStyle]="getBgImage(i, j)">
+
+        </div>
+        <span>{{product.ProductName}}</span>
+      </div>
+    </div>
+  </div>
+</perfect-scrollbar>
+</div>
+</div>

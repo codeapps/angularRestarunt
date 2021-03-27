@@ -1,0 +1,53 @@
+<div fxLayout='column' style="padding: 10px">
+  <div fxLayout='row wrap'>
+    <div fxFlex='16.66' fxFlex.sm='33.33' fxFlex.lt-sm='50' style="padding: 5px;" *ngFor="let item of reportview" >
+      <div [style.backgroundColor]='item.color' style="height: 2px;"></div>
+      <mat-card class="header-card" >
+
+        <div fxLayout='column' fxLayoutAlign='center center'>
+          <h3 style="text-align: center;">{{item.name}}</h3>
+          <p [style.color]="item.color">{{item.count }}</p>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <div fxLayout='row' class="chart-container">
+    <div fxFlex='100' class="col ">
+      <ngx-charts-area-chart [scheme]="colorScheme" [legend]="true" [showXAxisLabel]="true"
+        [showYAxisLabel]="true" [showGridLines]='false' [legendPosition]="'below'" [xAxis]="true" [yAxis]="true" [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel" [results]="chartData" [legendTitle]='""'></ngx-charts-area-chart>
+    </div>
+  </div>
+
+  <div fxLayout='row' fxLayout.lt-sm='column'>
+    <div fxFlex='50' fxFlex.lt-sm='100' class="col h-250">
+      <ngx-charts-bar-vertical [scheme]="colorScheme" [showGridLines]='false' [results]="single" [gradient]="false" [xAxis]="true"
+        [yAxis]="true" [legend]="true" [legendPosition]="'below'" [showXAxisLabel]="true" [showYAxisLabel]="true"
+        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"  [legendTitle]='""'></ngx-charts-bar-vertical>
+    </div>
+    <div fxFlex='50' fxFlex.lt-sm='100' class="col h-250">
+      <ngx-charts-pie-chart
+
+      [scheme]="colorScheme"
+      [results]="single"
+      [gradient]="false"
+      [legend]="true"
+      [legendPosition]="'below'"
+      [labels]="true"
+      [doughnut]="false"
+      [legendTitle]='""'
+      >
+    </ngx-charts-pie-chart>
+    </div>
+  </div>
+</div>
+
+<!-- <div fxFlex='100%' fxLayout='row' class="content-wrapper">
+  <div fxLayout='column' fxLayoutAlign='center center' class="content-image">
+      <h2>Dinner With US <span class="teme-color">Family</span></h2>
+      <h3 class="teme-color">Accidental appearances</h3>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy nibh euismod</p>
+      <button [routerLink]="['/restarunt/pos']">BOOK MY TABLE</button>
+  </div>
+</div> -->

@@ -1,0 +1,391 @@
+<div class="close-btn-outer" *ngIf="dialogueData.params">
+  <button mat-mini-fab color="warn" (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<section mat-dialog-content class="container" >
+    <div *ngIf="!createFlag">
+        <div class="select-type" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+            <div>
+                <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+            </div>
+            <div fxFlex="20">
+                <mat-form-field appearance="outline">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select [(ngModel)]="typeOfHead" (selectionChange)="fnAccountGets()">
+                        <mat-option value="Customer">Customer</mat-option>
+                        <mat-option value="Supplier">Supplier</mat-option>
+                        <mat-option value="Staff">Staff</mat-option>
+                        <mat-option value="Salesman">Salesman</mat-option>
+                        <mat-option value="Agent">Agent</mat-option>
+                        <mat-option value="Other">Other</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxFlex="68" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fnsearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Head Name</th>
+                            <th>Address1</th>
+                            <th>Address2</th>
+                            <th>Phone</th>
+                            <th>Balance</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let head of accountheadList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(head)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{head.AC_Name}}</td>
+                            <td>{{head.Addr1}}</td>
+                            <td>{{head.Addr2}}</td>
+                            <td>{{head.Phone}}</td>
+                            <td>{{head.Balance}}</td>
+                            <td>{{head.Type}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnBackToList()">Back</button>
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <!-- <button *ngIf="supplierFlag" mat-raised-button color="primary">Choose Company</button>
+            <button *ngIf="salesManFlag" mat-raised-button color="primary">SalesMan AreaLink</button> -->
+        </div>
+        <div fxLayoutGap="70px">
+            <div fxFlex="25" class="tbl-report mat-elevation-z8 report">
+                <table>
+                    <thead>
+                        <th style="width: 100px;">Type</th>
+                        <th style="width: 60px;">Active</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Customer</td>
+                            <td>
+                                <mat-checkbox (change)="fnCustomerChange($event)" [(ngModel)]="customerFlag">
+                                </mat-checkbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Supplier</td>
+                            <td>
+                                <mat-checkbox (change)="fnSupplierChange($event)" [(ngModel)]="supplierFlag">
+                                </mat-checkbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Agent</td>
+                            <td>
+                                <mat-checkbox (change)="fnAgentChange($event)" [(ngModel)]="agentFlag"></mat-checkbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Salesman</td>
+                            <td>
+                                <mat-checkbox (change)="fnsalesManChange($event)" [(ngModel)]="salesManFlag">
+                                </mat-checkbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Staff</td>
+                            <td>
+                                <mat-checkbox (change)="fnstaffChange($event)" [(ngModel)]="staffFlag"></mat-checkbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Login</td>
+                            <td>
+                                <mat-checkbox (change)="fnLoginChange($event)" [(ngModel)]="loginFlag"></mat-checkbox>
+                            </td>
+                        </tr>
+                        <!-- <tr *ngFor="let item of typeFields">
+                            <td>{{item.Type}}</td>
+                            <td>
+                                <mat-checkbox (change)="fnClickCheckBox(item.Type,$event.checked)"></mat-checkbox>
+                            </td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+            <div fxLayoutGap="30px" style="padding-top: 36px;">
+                <mat-form-field appearance="outline">
+                    <mat-label *ngIf="radioValue == ''">Name</mat-label>
+                    <mat-label *ngIf="radioValue == 'Yes'">Bank Name</mat-label>
+                    <mat-label *ngIf="radioValue == 'No'">Other Ledger Name</mat-label>
+                    <input #myinput matInput [(ngModel)]="accountSource.AC_Name">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Under</mat-label>
+                    <mat-select [(ngModel)]="accountSource.Schedule4">
+                        <mat-option *ngFor="let item of scheduleList" [value]='item.Id'>{{item.HeadName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="!salesManFlag && !customerFlag &&!supplierFlag&&!agentFlag&&!staffFlag&&!loginFlag"
+                    fxLayout="column">
+                    <div>
+                        <h3>Account Section</h3>
+                    </div>
+                    <div>
+                        <mat-radio-group fxLayoutGap="20px" (change)="fnRadioChange($event)" [(ngModel)]="radioValue">
+                            <mat-radio-button value="Yes">Bank</mat-radio-button>
+                            <mat-radio-button value="No">Other Ledger</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="margin-top: 25px;">
+        <div *ngIf="addressFlag || customerFlag" fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="90" fxLayoutGap="10px">
+                <h4>Address Section</h4>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Address 1</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Addr1">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Address 2</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Addr2">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Address 3</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Addr3">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Phone</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Phone">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Mobile</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Mobile">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>State</mat-label>
+                    <mat-select [(ngModel)]="accountSource.DescEditFlag" (selectionChange)="fnChangeState($event)">
+                        <mat-option *ngFor="let item of stateList" [value]="item.State_Name">{{item.StateName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Area</mat-label>
+                    <mat-select [(ngModel)]="accountSource.AreaId">
+                        <mat-option *ngFor="let area of areaList" [value]="area.Area_Id">{{area.Area_Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field *ngIf="radioValue != 'Yes'" appearance='outline'>
+                    <mat-label>Bank Name</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Account No</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>IFSC Code</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>E-mail</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Email">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>State Code</mat-label>
+                    <mat-select [(ngModel)]="accountSource.Schedule1" (selectionChange)="fnChangeStateCode($event)">
+                        <mat-option *ngFor="let item of stateList" [value]="item.State_Code">{{item.State_Code}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Category</mat-label>
+                    <mat-select [(ngModel)]="accountSource.CategoryId">
+                        <mat-option *ngFor="let cat of categoryList" [value]="cat.CategoryId">{{cat.CategoryName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div fxLayout="row" fxLayoutGap="30px">
+                    <span>Model Point Active</span>
+                    <mat-checkbox [(ngModel)]="accountSource.bSelect"></mat-checkbox>
+                </div>
+            </div>
+            <div *ngIf="customerFlag || supplierFlag" fxLayout="column" fxFlex="90" fxLayoutGap="10px">
+                <h4>Reg Section</h4>
+                <mat-form-field appearance='outline'>
+                    <mat-label>DLN No1</mat-label>
+                    <input matInput [(ngModel)]="accountSource.DLNo1">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>DLN No2</mat-label>
+                    <input matInput [(ngModel)]="accountSource.DLNo2">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>GSTIN No</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Tin1">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Aadhar No</mat-label>
+                    <input matInput [(ngModel)]="accountSource.Tin2">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Credit Limit Days</mat-label>
+                    <input matInput [(ngModel)]="accountSource.CrLmtDays">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Start Date</mat-label>
+                    <input [(ngModel)]="accountSource.StartDate" matInput [matDatepicker]="enterDate" [value]="date"
+                        (click)="enterDate.open();">
+                    <mat-datepicker-toggle matSuffix [for]="enterDate"></mat-datepicker-toggle>
+                    <mat-datepicker #enterDate></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>PAN No</mat-label>
+                    <input matInput [(ngModel)]="accountSource.CstNo1">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Currency</mat-label>
+                    <mat-select [(ngModel)]="accountSource.CurrencyId">
+                        <mat-option *ngFor="let currency of currencyList" [value]="currency.UniqueId">
+                            {{currency.CurrencyName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Credit Limit Amount</mat-label>
+                    <input matInput [(ngModel)]="accountSource.CrLmtAmt">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Expiry Date</mat-label>
+                    <input matInput [(ngModel)]="accountSource.ExpiryDate" [matDatepicker]="expiry" [value]="date"
+                        (click)="expiry.open();">
+                    <mat-datepicker-toggle matSuffix [for]="expiry"></mat-datepicker-toggle>
+                    <mat-datepicker #expiry></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Media</mat-label>
+                    <mat-select [(ngModel)]="accountSource.MediaId">
+                        <mat-option *ngFor="let item of categoryList" [value]="item.CategoryId">{{item.CategoryName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Type</mat-label>
+                    <mat-select [(ngModel)]="accountSource.PurType">
+                        <mat-option value="LOCAL">LOCAL</mat-option>
+                        <mat-option value="INTERSTATE">INTERSTATE</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div fxLayout="row" fxLayoutGap="30px" class="outstanding">
+                    <span>OutStanding Print</span>
+                    <mat-checkbox [(ngModel)]="outStandingFlag" (change)="fnOutStandingChange($event)"></mat-checkbox>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="customerFlag" fxLayout="row" class="select-billseries" fxLayoutGap="20px">
+            <div fxLayout="column" fxFlex="50">
+                <h3>Select BillSeries</h3>
+                <div fxFlex="100">
+                    <hr>
+                </div>
+                <div fxLayoutGap="30px" style="margin-top: 20px;">
+                    <mat-checkbox></mat-checkbox>
+                    <span>BB , DIGIT COMPUTERS </span>
+                </div>
+                <div fxLayoutGap="30px">
+                    <mat-checkbox></mat-checkbox>
+                    <span>BC , DIGIT COMPUTERS </span>
+                </div>
+            </div>
+            <div fxLayout="column" fxFlex="50">
+                <div fxLayoutGap="20px" style="margin-top: 45px;">
+                    <mat-form-field appearance='outline'>
+                        <mat-label>Id</mat-label>
+                        <input matInput [(ngModel)]="accountSource.UniqueDeviceId">
+                    </mat-form-field>
+                    <mat-form-field appearance='outline'>
+                        <mat-label>Price Menu</mat-label>
+                        <mat-select [(ngModel)]="accountSource.PriceMenuId">
+                            <mat-option *ngFor="let price of priceMenuList" [value]="price.PriceMenu_Id">
+                                {{price.PriceMenu_Name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="agentFlag" fxLayout="row" class="select-billseries">
+            <div fxLayout="column" fxFlex="50">
+                <h3>Agent Section</h3>
+                <div fxFlex="100">
+                    <hr>
+                </div>
+                <div fxLayoutGap="30px">
+                    <mat-form-field fxFlex="48" appearance='outline'>
+                        <mat-label>Price Menu</mat-label>
+                        <mat-select [(ngModel)]="accountSource.AgentPriceMenuId">
+                            <mat-option *ngFor="let price of priceMenuList" [value]="price.PriceMenu_Id">
+                                {{price.PriceMenu_Name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="48" appearance='outline'>
+                        <mat-label>Commission(%)</mat-label>
+                        <input matInput [(ngModel)]="accountSource.AgentMarginPers">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="staffFlag" fxLayout="row" class="select-billseries">
+            <div fxLayout="column" fxFlex="100">
+                <h3>Staff Section</h3>
+                <div fxFlex="100">
+                    <hr>
+                </div>
+                <div>
+                    <mat-form-field fxFlex="50" appearance='outline'>
+                        <mat-label>Access Level</mat-label>
+                        <mat-select [(ngModel)]="accountSource.AccessLevel">
+                            <mat-option value="4">Staff</mat-option>
+                            <mat-option value="1">SuperAdmin</mat-option>
+                            <mat-option value="2">Admin</mat-option>
+                            <mat-option value="3">Manager</mat-option>
+                            <mat-option value="5">Rep</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="accountSource.BankYesNo" fxLayout="row" class="select-billseries">
+            <div fxLayout="column" fxFlex="100">
+                <h3>Gst Section</h3>
+                <div fxFlex="100">
+                    <hr>
+                </div>
+                <div>
+                    <mat-form-field fxFlex="50" appearance='outline'>
+                        <mat-label>Gst Group</mat-label>
+                        <mat-select [(ngModel)]="accountSource.Schedule3">
+                            <mat-option *ngFor="let tax of taxesList" [value]="tax.TaxGroupId">{{tax.TaxName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

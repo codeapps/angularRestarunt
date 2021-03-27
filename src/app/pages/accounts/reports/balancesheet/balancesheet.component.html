@@ -1,0 +1,22 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-form-field appearance='outline'>
+                <mat-label>As On Date</mat-label>
+                <input matInput [matDatepicker]="from" (click)="from.open();" [(ngModel)]="fromDate">
+                <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                <mat-datepicker #from></mat-datepicker>
+            </mat-form-field>
+          
+            <button mat-raised-button color="primary" (click)="fngetReport()">Submit</button>           
+
+        </div>
+    </div>
+    <div>
+        <div *ngIf="!createFlag" fxFlex='100%' fxLayout="column" fxLayoutGap='10px'>
+            <app-report-content [dataSource]='datalist' [ReportHeadName]='strReportHeadName'
+                (valueChange)='myPageChange()'>
+            </app-report-content>
+        </div>
+    </div>
+</section>

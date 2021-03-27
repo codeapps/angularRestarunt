@@ -1,0 +1,15 @@
+@import '../../../../../assets/css/reportstyle.scss';
+
+::ng-deep app-companywisesales {
+
+  .min_height {
+    min-height: 5px;
+  }
+
+  .mat-tab-label {
+    height: 40px;
+    padding: 0 10px;
+    min-width: 100px;
+  }
+
+}

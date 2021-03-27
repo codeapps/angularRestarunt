@@ -1,0 +1,141 @@
+<section class="container">
+    <div *ngIf="createFlag" fxLayout="column" fxLayoutGap="20px">
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="60" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+                <mat-form-field appearance='outline'>
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="from" placeholder="Choose FromDate" (click)="from.open()"
+                        [(ngModel)]="fromDate" (dateChange)="fnVoucherGets()">
+                    <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                    <mat-datepicker #from></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" (click)="topicker.open()"
+                        [(ngModel)]="toDate" (dateChange)="fnVoucherGets()">
+                    <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+                    <mat-datepicker #topicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div fxFlex="38" fxLayoutAlign="end center" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Search</mat-label>
+                    <input matInput [(ngModel)]="searchtext" (input)="fnVoucherGets()">
+                </mat-form-field>
+            </div>
+
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Voucher No</th>
+                            <th>Voucher Date</th>
+                            <th>Account Name</th>
+                            <th>Address</th>
+                            <th>Voucher Amount</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let head of contraList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(head)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{head.VoucherNo}}</td>
+                            <td>{{head.VoucherDate}}</td>
+                            <td>{{head.AccountName}}</td>
+                            <td>{{head.Addr1}}</td>
+                            <td>{{head.VoucherAmt}}</td>
+                            <td>{{head.EmployeeName}}</td>                           
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!createFlag" fxLayout="column" fxLayoutGap="50px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="fnBack()">Back To list</button>
+            <button mat-raised-button color="primary">Print</button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxLayout="column" fxFlex="25" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Voucher No</mat-label>
+                    <input matInput disabled [(ngModel)]="voucherNo">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Remarks</mat-label>
+                    <input matInput [(ngModel)]="contraSource.remarks">
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" fxFlex="25" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Date</mat-label>
+                    <input matInput [matDatepicker]="voucher" placeholder="Choose FromDate" (click)="voucher.open()"
+                        [(ngModel)]="voucherDate" [(ngModel)]="contraSource.voucherDate">
+                    <mat-datepicker-toggle matSuffix [for]="voucher"></mat-datepicker-toggle>
+                    <mat-datepicker #voucher></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>SalesMan</mat-label>
+                    <mat-select [(ngModel)]="contraSource.salesmanId">
+                        <mat-option *ngFor="let item of salesManList" [value]="item.AC_Id">{{item.AC_Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="row" class=" mat-elevation-z8" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div class="tbl-report report" fxFlex="100">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;border: none;"></th>
+                            <th style="width: 30%;border-right: none;">AccountHead</th>
+                            <th style="width: 30%;border-right: none;">Address</th>
+                            <th style="width: 10%;border-right: none;">Credit</th>
+                            <th style="width: 20%;border-right: none;">ledger Balance</th>
+                            <th style="width: 5%;">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border-bottom: none;">from</td>
+                            <td><input (input)="fnFilterFromContra($event.target.value)"
+                                    [(ngModel)]="contraSource.accountHeadName1"></td>
+                            <td><input [(ngModel)]="contraSource.accountHeadAddress1"></td>
+                            <td><input [(ngModel)]="contraSource.accountHeadCredit" id='credit'></td>
+                            <td>{{contraSource.accountHeadledgerBal1}}</td>
+                            <td>CR</td>
+                        </tr>
+                        <tr>
+                            <td style="border-bottom: none;">To</td>
+                            <td><input (input)="fnFilterToContra($event.target.value)"
+                                    [(ngModel)]="contraSource.accountHeadName2"></td>
+                            <td><input [(ngModel)]="contraSource.accountHeadAddress2"></td>
+                            <td><input [(ngModel)]="contraSource.accountHeadDebit" id='debit'></td>
+                            <td>{{contraSource.accountHeadledgerBal2}}</td>
+                            <td>DR</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <app-scodeautocomplete *ngIf="contraFromFlag" [fillterData]='filteredOptions'
+                    (valueChange)='fnContraFromChange($event)' [columnHeader]='ColContraFromHeader'
+                    [thHeader]='ContraFromHeader'>
+                </app-scodeautocomplete>
+                <app-scodeautocomplete *ngIf="contraToFlag" [fillterData]='filteredOptions'
+                    (valueChange)='fnContraToChange($event)' [columnHeader]='ColContraToHeader'
+                    [thHeader]='ContraToHeader'>
+                </app-scodeautocomplete>
+            </div>
+        </div>
+    </div>
+</section>

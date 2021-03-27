@@ -1,0 +1,81 @@
+<div fxLayout='row' fxLayoutAlign='space-between center' [id]="data.count" appDraggableDialogue>
+
+<h2 mat-dialog-title style="margin: 0;">Calculator</h2>
+
+<div fxLayoutGap='10px'>
+  <button mat-icon-button  matTooltip="history" (click)='history_Pop  = !history_Pop'>
+    <mat-icon color="primary">history</mat-icon>
+  </button>
+  
+  <button mat-icon-button matTooltip="close" (click)='dialogRef.close();'>
+    <mat-icon color="warn">clear</mat-icon>
+  </button>
+</div>
+</div>
+
+<div mat-dialog-content fxLayout="row" fxLayoutAlign='center start'>
+ <div fxLayout='column'>
+  <div fxFlex='100' class="display-screen">
+    <p class="top-line">{{calcHistory}}</p>
+    <p class="main">{{display}}</p>
+  </div>
+  <div fxFlex class="calculator">
+    <div>
+      <button fxFlex='25' mat-raised-button color="warn" (click)="acPressed()">AC</button>
+      <button fxFlex='25' mat-raised-button color="warn" (click)="cePressed()">CE</button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="backPrssed()">
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="operatorPressed('/')">÷</button>
+    </div>
+    <div>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('7')">7</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('8')">8</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('9')">9</button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="operatorPressed('*')">x</button>
+    </div>
+
+    <div>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('4')">4</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('5')">5</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('6')">6</button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="operatorPressed('-')">-</button>
+    </div>
+
+    <div>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('1')">1</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('2')">2</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('3')">3</button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="operatorPressed('+')">+</button>
+    
+    </div>
+    <div>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="percentPressed()">%</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('0')">0</button>
+      <button fxFlex='25' mat-raised-button (click)="numberPressed('.')">.</button>
+      <button fxFlex='25' mat-raised-button color="primary" (click)="equalPressed()">=</button>
+    </div>
+
+ 
+  </div>
+</div>
+
+  <div *ngIf="history_Pop" fxLayout='column' fxLayoutAlign='space-between' fxLayoutGap='10px' class='history'>
+    <h4 *ngIf="historyData.length == 0">There's no history</h4>
+    <h6>History</h6>
+    <div class="panel_history"> 
+    <div *ngFor="let item of historyData">
+      <span>{{item.keys}}</span>
+      <h4>{{item.result}}</h4>
+    </div>
+    </div>
+    <div fxFlexAlign='end'>
+     <button mat-icon-button (click)='historyData = []'>
+       <mat-icon color="warn">delete</mat-icon> 
+      </button>
+    </div>
+  </div>
+
+  
+
+</div>

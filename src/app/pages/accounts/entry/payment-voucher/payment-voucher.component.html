@@ -1,0 +1,211 @@
+<section class="container">
+    <div *ngIf="createFlag" fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+            <mat-form-field appearance='outline'>
+                <mat-label>From Date</mat-label>
+                <input matInput [matDatepicker]="from" placeholder="Choose FromDate" (click)="from.open()"
+                    [(ngModel)]="fromDate" (dateChange)="fnVoucherGets()">
+                <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                <mat-datepicker #from></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance='outline'>
+                <mat-label>To Date</mat-label>
+                <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" (click)="topicker.open()"
+                    [(ngModel)]="toDate" (dateChange)="fnVoucherGets()">
+                <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+                <mat-datepicker #topicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance='outline'>
+                <mat-label>Search</mat-label>
+                <input matInput [(ngModel)]="searchText" (input)="fnVoucherGets()">
+            </mat-form-field>
+            <mat-radio-group [(ngModel)]="rdoValue" (change)="fnVoucherGets()">
+                <mat-radio-button value="CASH">CASH</mat-radio-button>
+                <mat-radio-button value="BANK">BANK</mat-radio-button>
+            </mat-radio-group>
+            <mat-form-field appearance='outline'>
+                <mat-label>Select Type</mat-label>
+                <mat-select [(ngModel)]="typeOfDate" (selectionChange)="fnVoucherGets()">
+                    <mat-option value="EnterDate">Enter Date</mat-option>
+                    <mat-option value="VoucherDate">Voucher Date</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-raised-button color="primary">Export</button>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Voucher No</th>
+                            <th>Voucher Date</th>
+                            <th>Account Name</th>
+                            <th>Address</th>
+                            <th>Voucher Amount</th>
+                            <th>User</th>
+                            <th>Remarks</th>
+                            <th>Print</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let head of voucherList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(head)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{head.VoucherNo}}</td>
+                            <td>{{head.VoucherDate}}</td>
+                            <td>{{head.AccountName}}</td>
+                            <td>{{head.Addr1}}</td>
+                            <td>{{head.VoucherAmt}}</td>
+                            <td>{{head.EmployeeName}}</td>
+                            <td>{{head.Remarks}}</td>
+                            <td>
+                                <button mat-button>
+                                    <mat-icon>print</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag" fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="fnBack()">Back</button>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start start">
+            <div fxLayout="column" fxFlex="50">
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                    <div fxLayout="column" fxFlex="50" fxLayoutGap="20px">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Voucher No</mat-label>
+                            <input matInput disabled [(ngModel)]="voucherNo">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Payment Type</mat-label>
+                            <mat-select [(ngModel)]="paymentSource.paymentType"
+                                (selectionChange)="fnpayamentTypeChange()">
+                                <mat-option value="CASH">CASH</mat-option>
+                                <mat-option value="BANK">BANK</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label *ngIf="paymentSource.paymentType == 'CASH'">From</mat-label>
+                            <mat-label *ngIf="paymentSource.paymentType == 'BANK'">BANK</mat-label>
+                            <input matInput [(ngModel)]="paymentSource.selectBank"
+                                [disabled]="paymentSource.paymentType == 'CASH'"
+                                (input)="fnSearchBankName($event.target.value)">
+                        </mat-form-field>
+                        <app-scodeautocomplete *ngIf="selectBankFlag" [fillterData]='filteredOptions'
+                            (valueChange)='fnSelectBankChange($event)' [columnHeader]='colBankHeader'
+                            [thHeader]='BankHeader'>
+                        </app-scodeautocomplete>
+                        <mat-form-field appearance="outline">
+                            <mat-label>To</mat-label>
+                            <input matInput id="selectbank" [(ngModel)]="AcName"
+                                (input)="fnFilterAccountHead($event.target.value)">
+                        </mat-form-field>
+                        <app-scodeautocomplete *ngIf="selectAccountHeadFlag" [fillterData]='filteredOptions'
+                            (valueChange)='fnSelectPaymentTypeChange($event)' [columnHeader]='colAccHeader'
+                            [thHeader]='AccHeader'>
+                        </app-scodeautocomplete>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Address</mat-label>
+                            <input matInput disabled [(ngModel)]="paymentSource.address">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>paid Amount</mat-label>
+                            <input matInput [(ngModel)]="paymentSource.paidAmount" id="paidAmount"
+                                (input)="fngetTotal()">
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="column" fxFlex="50" fxLayoutGap="20px">
+                        <mat-form-field appearance='outline'>
+                            <mat-label>Date</mat-label>
+                            <input matInput [matDatepicker]="voucher" placeholder="Choose FromDate"
+                                (click)="voucher.open()" [(ngModel)]="paymentSource.voucherDate">
+                            <mat-datepicker-toggle matSuffix [for]="voucher"></mat-datepicker-toggle>
+                            <mat-datepicker #voucher></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ledger Balance</mat-label>
+                            <input matInput disabled [(ngModel)]="paymentSource.outstanding">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Balance Amount</mat-label>
+                            <input matInput disabled [(ngModel)]="paymentSource.balanceAmt">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>TDS(%)</mat-label>
+                            <input matInput [(ngModel)]="paymentSource.tdsperc" (input)="fngetTotal()">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>TDS Amount</mat-label>
+                            <input matInput disabled [(ngModel)]="paymentSource.tdsAmt">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>SalesMan</mat-label>
+                            <mat-select [(ngModel)]="paymentSource.salesmanId">
+                                <mat-option *ngFor="let item of salesManList" [value]="item.AC_Id">{{item.AC_Name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Remarks</mat-label>
+                            <input matInput [(ngModel)]="paymentSource.remarks">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="paymentSource.paymentType == 'BANK'" fxLayout="column" fxFlex="50">
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <div fxLayout="column" class="mat-elevation-z8" fxFlex="50" fxLayoutGap="10px"
+                        fxLayoutAlign="center center">
+                        <h4>Bank Details</h4>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Customer Bank</mat-label>
+                            <input matInput [(ngModel)]="bankSource.bankName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Cheque No</mat-label>
+                            <input matInput [(ngModel)]="bankSource.chequeNo">
+                        </mat-form-field>
+                        <mat-form-field appearance='outline'>
+                            <mat-label>Cheque Date</mat-label>
+                            <input matInput [matDatepicker]="cheque" placeholder="Choose FromDate"
+                                (click)="cheque.open()" [(ngModel)]="bankSource.chequeDate">
+                            <mat-datepicker-toggle matSuffix [for]="cheque"></mat-datepicker-toggle>
+                            <mat-datepicker #cheque></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Transfer Type</mat-label>
+                            <mat-select>
+                                <mat-option value="NEFT">NEFT</mat-option>
+                                <mat-option value="IMPS">IMPS</mat-option>
+                                <mat-option value="RTGS">RTGS</mat-option>
+                                <mat-option value="CARD">CARD</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+            <label>Paid Amount Total</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Paid Amount Total</mat-label>
+                <input matInput [(ngModel)]="paymentSource.voucherAmt">
+            </mat-form-field>
+        </div>
+    </div>
+</section>

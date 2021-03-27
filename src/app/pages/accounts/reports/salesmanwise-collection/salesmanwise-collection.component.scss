@@ -1,0 +1,31 @@
+@import '../../../../../assets/css/reportstyle.scss';
+
+.container {
+  margin-top: 20px;
+  margin-left: 20px;
+
+  .div-select {
+    padding: 8px;
+    width: 500px;
+
+    .box-header {
+      max-height: 450px;
+      overflow: auto;
+
+      table {
+        width: 100%;
+
+        tr.mat-row {
+          height: 35px;
+        }
+
+        th.mat-header-cell:last-of-type {
+          color: blue;
+          font-size: inherit;
+        }
+      }
+    }
+  }
+
+
+}

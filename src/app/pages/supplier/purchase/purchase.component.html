@@ -1,0 +1,898 @@
+<section class="sv-section">
+
+  <span *ngIf="bShodowPage" class="clsShadowFull" id="SpnShodowPage"></span>
+  <div *ngIf="!showBill">
+    <div fxFlexFill class="top-header">
+      <div fxLayout='row wrap' fxLayoutAlign='space-between center' class="btn-wrapper">
+        <div>
+            <button [disabled]='btnSave' [style.display]="btnSave?'none':'inline-flex'" 
+          (click)="fnsave('save')" class="spinner-save">
+            <span class="text-root">F2:&nbsp;</span>SAVE&nbsp;
+            <mat-icon *ngIf="bSaveButtonClickProgressbar">
+              <mat-spinner color="warn" diameter="15">
+              </mat-spinner>
+            </mat-icon>
+          </button>
+          <button (click)='fnAddRow()'><span class="text-root">A:&nbsp;</span>AddRow</button>
+          <button (click)="fnbackTolist()"><span class="text-root">B:&nbsp;</span>Back To List</button>
+          <button [disabled]='btnEditDisabled' [style.display]="!btnEdit?'none':'inline'" (click)='fnEdit()'><span
+              class="text-root">E:&nbsp;</span>Edit</button>
+          <button [disabled]='btnSize' [style.display]="btnSize?'none':'inline'" (click)="popupSize = true"><span
+              class="text-root">S:&nbsp;</span>Size</button>
+          <button [disabled]='btnUpdate' [style.display]="btnUpdate?'none':'inline'" (click)="fnUpdateBill()"><span
+              class="text-root">U:&nbsp;</span>Update</button>
+        </div>
+
+        <div fxLayoutAlign='start center' fxLayoutGap='10px' style="border-left: 1px solid #999;">
+          <div fxLayoutGap='10px'>
+            &nbsp;<span matLine>Pur&nbsp;No: <span class="text-line">{{PurNo}}</span>, </span>
+            <span matLine>Pur&nbsp;Date: <span class="text-line">{{ReceiptInfoMain.Receipt_Date1}}</span> </span>
+          </div>
+
+          <div fxLayout='row' style="border-left: 1px solid #999;">
+            <button fxLayoutAlign='center center' [matMenuTriggerFor]="menu" style="padding: 3px;">
+              <span class="text-root">M:&nbsp;</span>More
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+
+            <button matTooltip='help' color='primary'>
+              <span class="text-root">H:&nbsp;</span>Help
+            </button>
+            <mat-menu #menu="matMenu">
+
+              <button mat-menu-item *ngIf="btnSerialNoSet" (click)="PopupPhoneSerialNoSet = true">SerialNoSet</button>
+              <button mat-menu-item *ngIf="btnPreview" (click)="fnPreview()">Preview</button>
+              <button mat-menu-item *ngIf="btnCancel" [disabled]='btnCancelDisabled' (click)="fnCancel()">Bill
+                Cancel</button>
+              <button mat-menu-item *ngIf="btnPurchaseBillRecal">Recall</button>
+              <button mat-menu-item *ngIf="btnProductBrowse">Product Update</button>
+              <button mat-menu-item *ngIf="btnProductRefresh">Item Refresh</button>
+              <button mat-menu-item *ngIf="btnNewBill" (click)="fnNewBill()">New Bill</button>
+              <button mat-menu-item *ngIf="btnConvertSalesBill" (click)="fnConvertBill()">Convert SalesBill</button>
+              <input type="file" accept=".xlsx, .xlx/*" id="txtExcel" (change)="fnUploadExcel($event.target.files)"
+                #file style="display: none;">
+              <button mat-menu-item *ngIf="btnBrowseExcel" (click)="file.click()">Choose File</button>
+              <button mat-menu-item *ngIf="btnBarCodePrintAll" (click)="fnBarCodePrintAll()">BarCodePrint</button>
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div fxFlexFill class="header-details">
+      <div fxLayout='row wrap' fxLayoutGap='10px'>
+        <div fxLayout='column' class="col-input">
+          <span>Supplier</span>
+          <input #txtSupplier id="txtSupplier" placeholder="Search Supplier" autocomplete="off"
+            [matTooltip]='ReceiptInfoMain.Receipt_SupplierName' (keyup)='fnSupplierSearch($event)'
+            (keydown.enter)="txtSupplier.blur()" [(ngModel)]="ReceiptInfoMain.Receipt_SupplierName">
+          <app-scodeautocomplete *ngIf="selectcomplete" [fillterData]='fillterItems'
+            (valueChange)='fnSupplierChange($event)' [columnHeader]='colHeaders' [thHeader]='HeaderColumn'>
+          </app-scodeautocomplete>
+        </div>
+
+        <div fxLayout='column' class="col-input">
+          <span>Invoice No</span>
+          <input placeholder="Enter No" id="txtInvoice" [(ngModel)]="ReceiptInfoMain.Receipt_InvoNo"
+            (keydown.enter)="fnfocusInvoice($event)">
+        </div>
+
+        <div fxLayout='column' class="col-input">
+          <span>Invoice Date</span>
+          <div fxLayoutAlign='center center'>
+            <input id="txtInvoiceDate" [matDatepicker]="picker" placeholder="Choose a date" style="width: 90px; border-radius: 3px 0 0 3px;"
+              [(ngModel)]="ReceiptInfoMain.Receipt_InvoDate" (keydown.enter)="fnFocusDate()">
+            <span class="calender">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </span>
+          </div>
+        </div>
+        <div fxLayout='column' class="col-input">
+          <span>Pay Terms</span>
+          <select [(value)]="ReceiptInfoMain.Receipt_PayTerms">
+            <option value="CREDIT">CREDIT</option>
+            <option value="CASH">CASH</option>
+          </select>
+        </div>
+
+        <div fxLayout='column' class="col-input">
+          <span>Bill Type</span>
+          <select [(ngModel)]="ReceiptInfoMain.PurBillSerId" (change)='fnGetMaxBillNo()' [disabled]='billseries'>
+            <option *ngFor="let item of jsonBillType" [value]='item.PurBillSerId'>{{ item.PurBillSerPrefix }}
+            </option>
+          </select>
+        </div>
+
+        <div fxLayout='column' class="col-input">
+          <span>Address</span>
+          <input placeholder="Enter No" [matTooltip]='txtAddress' [(ngModel)]="ReceiptInfoMain.Receipt_Address"
+            readonly>
+        </div>
+
+        <div fxLayout='column' class="col-input">
+          <span>{{strGSTName}}</span>
+          <input placeholder="Enter No" [matTooltip]='txtGSTno' [(ngModel)]="txtGSTno" readonly>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="status" style="font-size: 11px;">
+      Showing <span>{{scroll.viewPortInfo.startIndex}}</span>
+      - <span>{{scroll.viewPortInfo.endIndex}}</span>
+      of <span>{{dynamicArray?.length}}</span>
+      <!-- <span>({{scroll.viewPortItems?.length}} nodes)</span>
+      <span>[scrollStartPosition: {{scroll.viewPortInfo.scrollStartPosition}}px, scrollEndPosition: {{scroll.viewPortInfo.scrollEndPosition}}px, maxScrollPosition: {{scroll.viewPortInfo.maxScrollPosition}}px ]</span> -->
+    </div>
+
+
+    <virtual-scroller #scroll class="tbl-div mat-elevation-z4" [items]="dynamicArray">
+      <table class="tblGrid">
+        <thead #header>
+          <tr>
+            <ng-container *ngFor="let col of columnHeader;let j = index">
+              <th *ngIf="col" [ngClass]="{'right-sticky': col == 'Amount'}" 
+              [id]="col == 'Product Name & Packing' ? 'productTh': ''"
+              (mousedown)="onResizeColumn($event, j)"
+                [ngStyle]="{'display':col == 'Display Name' && !displayName ? 'none': ''}">
+                {{col}}
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+
+        <div *ngIf="tableBuffer" style="width: 100%; display: table-caption;">
+          <mat-progress-bar mode="buffer"></mat-progress-bar>
+        </div>
+
+        <tbody #container>
+          <tr *ngFor="let item of scroll.viewPortItems; let i = index;"
+            [ngClass]="{'rowAlert': ArgSellingRateValidation[item.count], 'active': item.count == selectedRow}"
+            (click)="setClickedRow(item.count)" class="tdHover">
+            <ng-container *ngFor="let col of columnHeader">
+              <td *ngIf="col == 'Del'" style="cursor: pointer"
+                (click)='deleteRow(item.count, ItemDisable[item.uniqueRowId])'>
+                <mat-icon color='warn' style="font-size: 20px;">delete</mat-icon>
+              </td>
+
+              <td *ngIf="col == 'No'" class="tblSlNo">
+                <input [value]='item.count + 1' type="number" (keyup)='fnTaxChangeToAnother(item.count, $event)'
+                  readonly>
+              </td>
+
+              <td *ngIf="col == 'Display Name'" class="ProductDisplay" [ngStyle]="{'display':col == 'Display Name' && !displayName ? 'none': '',
+                            'background-color': col == 'Display Name' && bgExcel[item.count] ? '#f98080': ''}">
+                {{item.ReceiptSub_Field1}}
+              </td>
+
+              <td *ngIf="col == 'Code'" class="tblItemCode">
+                <!-- <input autocomplete="off" (keyup)="fnProductItemCodeSearch($event, i, item.count)"
+                  id="txtItemCode{{item.count}}" [(ngModel)]="item.Code" type="text"
+                  (keydown.enter)="fnFocusProduct($event, item.count)" [disabled]='ItemDisable[item.uniqueRowId]'
+                  [ngStyle]="{'background-color': bgExcel[item.count] ? '#62ff00': ''}" (blur)='fnFocusOut($event)'
+                  ng-model-options="{ debounce: 250 }" /> -->
+                   <input autocomplete="off" #productCode (keyup)="fnpopProductItemCodeSearch($event, i, item.count)"
+                  id="txtItemCode{{item.count}}" [(ngModel)]="item.Code" type="text"
+                  (keydown.enter)="fnFocusProduct($event, item.count)" [disabled]='ItemDisable[item.uniqueRowId]'
+                  [ngStyle]="{'background-color': bgExcel[item.count] ? '#62ff00': ''}" />
+              </td>
+
+              <td *ngIf="col == 'Product Name & Packing'" class="tblProductName">
+                <!-- <input id="txtproduct{{item.count}}" #product type="text" autocomplete="off"
+                  (keyup)="fnProductSearch($event, i, item.count)" [(ngModel)]="item.ItemName"
+                  (keydown.enter)="fnFocusProduct($event, item.count)" [disabled]='ItemDisable[item.uniqueRowId]'
+                  [ngStyle]="{'background-color': bgExcel[item.count] ? '#62ff00': ''}"
+                  (click)='fnProductSearch($event, i, item.count)' [matTooltip]='item.ItemName'
+                   ng-model-options="{ debounce: 250 }" (blur)='fnFocusOut($event)'/> -->
+
+                   <input id="txtproduct{{item.count}}" #product type="text" autocomplete="off"
+                  (keyup)="fnProductPopSearch($event, i, item.count)" [(ngModel)]="item.ItemName"
+                  (keydown.enter)="fnFocusProduct($event, item.count)" [disabled]='ItemDisable[item.uniqueRowId]'
+                  [ngStyle]="{'background-color': bgExcel[item.count] ? '#62ff00': ''}"
+                   [matTooltip]='item.ItemName'/>
+                   
+              </td>
+
+              <td *ngIf="col == 'GST%'" class="tblTax"> {{item.ReceiptSub_TaxPercentage}}</td>
+
+              <td *ngIf="col == 'Qty'" class="tblQty">
+                <input type="text" id="txtquantity{{i}}" [(ngModel)]="item.ReceiptSub_ReceiptQty"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnQtyCalculation(item.count)' [disabled]='ItemDisable[item.uniqueRowId]'
+                  (click)="$event.target.select()" ng-model-options="{ debounce: 250 }" />
+              </td>
+
+              <td *ngIf="col == 'Freight'" class="tblFreight">
+                <input type="text" [(ngModel)]="item.ReceiptSub_Freight" ng-model-options="{ debounce: 250 }"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'FQty'" class="tblFQty">
+                <input type="text" [(ngModel)]="item.ReceiptSub_ReceiptFree" ng-model-options="{ debounce: 250 }"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnQtyCalculation(item.count)' [disabled]='ItemDisable[item.uniqueRowId]'
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'Batch'" class="tblBatch">
+                <input [(ngModel)]="item.ReceiptSub_Batch" ng-model-options="{ debounce: 250 }"
+                  id="txtBatch{{item.count}}" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'ExpDate'" matTooltip='eg: 01/2019' class="tblExpDate">
+                <input pattern="[0-9]*" id="txtExpDate{{item.count}}" [(ngModel)]="item.ReceiptSub_ExpDate"
+                  ng-model-options="{ debounce: 250 }" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnExpDateKey($event)' [maxlength]='explength'
+                  [ngStyle]="{'background-color': fnTestDate(item.ReceiptSub_ExpDate) ? '': '#ff000075'}" />
+              </td>
+
+              <td *ngIf="col == 'PurRate'" class="tblPRate">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_ReceiptRate"
+                  id="txtPurchaseRate{{i}}" (keypress)="numberOnly($event)"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (input)='fnGetTotal(item.count)'
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'Dis(%)'" class="tblDisPers">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_ProdDiscount"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'DisAmt'" class="tblDisAmt">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_ProdDisAmt"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotalDisAmtRowwise(i)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'ScheAmt'" class="tblDisAmt">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SchemeAmt"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'LCost'" class="tblLandingCost">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_LandCost"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnPurRateCalculationOnCurRow(item.count)' readonly />
+              </td>
+
+              <td *ngIf="col == 'R Mar(%)'" class="tblRetailRateMargin">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_NeethiDisPers"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count);' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'W Mar(%)'" class="tblWholeRateMargin">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_WRateDis"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'R MRP' || col == lblRetailRate" class="tblSRate">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SellRate"
+                  id="txtSelRate{{item.count}}" (keypress)="numberOnly($event)"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnMrpOrMrpPersCalOnPurRate(item.count, "SelRate")' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'W MRP' || col == lblWholSalRate" class="tblWRate">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_WholeSaleRate"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnGetTotal(item.count)' (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'MRP' || col == lblMRP" class="tblMrp">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_MRP"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnMrpOrMrpPersCalOnPurRate(item.count, "MRP")' (click)="$event.target.select()" />
+              </td>
+              <!-- <td *ngIf="col=='txtPhoneSerialNum'"></td> -->
+              <td *ngIf="col == 'Pack'" class="tblPack">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_Pack"
+                  (keypress)="numberOnly($event)" [disabled]='ItemDisable[item.uniqueRowId]'
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (input)='fnQtyCalculation(item.count)'
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'SalesQty'" class="tblSalesQty">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SaleQty"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'SalesFre'" class="tblSalesFree">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SaleFree"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'Loose'" class="tblLooseQty">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_LooseQty"
+                  (keypress)="numberOnly($event)" (keydown.enter)="fnFocusQuantity($event, i, item.count)"
+                  (input)='fnQtyCalculation(item.count)' [disabled]='ItemDisable[item.count]'
+                  (click)="$event.target.select()" />
+              </td>
+
+              <td *ngIf="col == 'SalePeriod'" class="tblSalesPeriod">
+                <input [matDatepicker]="saleDate" autocomplete="off" [placeholder]="today.toLocaleString()"
+                  (click)="saleDate.open()" [(value)]="item.ReceiptSub_Period"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" readonly>
+                <mat-datepicker #saleDate></mat-datepicker>
+              </td>
+              <td *ngIf="col=='Profit(%)'">{{item.txtPurSelRateMarginPers}}</td>
+              <td *ngIf="col=='%MrpMargin'">{{item.txtPurMrpMarginPers}}</td>
+
+              <td *ngIf="col =='GSTAmt'" class="tblTaxAmt"> {{item.ReceiptSub_TaxAmt}} </td>
+              <td *ngIf="col =='BeforeGST'" class="tblAmtBeforeTax">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_AmtBeforeTax"
+                  (keypress)="numberOnly($event)" (input)='fnPurRateCalculationOnGrossValue(item.count, "GrossValue")'
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (click)="$event.target.select()" />
+              </td>
+              <td *ngIf="col =='Amount'" class="right-sticky tblAmtBeforeTax">{{item.ReceiptSub_Amount}}</td>
+              <td *ngIf="col =='Print'" style="cursor: pointer" [matTooltip]='item.ReceiptSub_BatchSlNo'
+                (click)="fnPrint(item.count)">
+                <mat-icon color='secondary' style="font-size: 20px;">print</mat-icon>
+              </td>
+
+              <td *ngIf="col =='SpRate1' || col == lblSpRate1" class="tblSpRate1">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SpRate1"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (keypress)="numberOnly($event)">
+              </td>
+              <td *ngIf="col =='DealerRate' || col == lblSpRate2" class="tblSpRate2">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SpRate2"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (keypress)="numberOnly($event)">
+              </td>
+              <td *ngIf="col =='SPRateThree' || col == lblSpRate3" class="tblSpRate3">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SpRate3"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (keypress)="numberOnly($event)">
+              </td>
+              <td *ngIf="col =='SPRateFour' || col == lblSpRate4" class="tblSpRate4">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SpRate4"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (keypress)="numberOnly($event)">
+              </td>
+              <td *ngIf="col =='SPRateFive' || col == lblSpRate5" class="tblSpRate5">
+                <input type="text" ng-model-options="{ debounce: 250 }" [(ngModel)]="item.ReceiptSub_SpRate5"
+                  (keydown.enter)="fnFocusQuantity($event, i, item.count)" (keypress)="numberOnly($event)">
+              </td>
+
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </virtual-scroller>
+    <!-- scroller End -->
+    <div class="bottom-table mat-elevation-z8">
+      <table>
+        <thead>
+          <tr>
+            <th>TotQty</th>
+            <th>
+              <select [(ngModel)]="ReceiptInfoMain.Field3" class="tblTotDisPers">
+                <option value="Pers">Dis(%)</option>
+                <option value="Amt">DisAmt</option>
+              </select>
+            </th>
+            <th>DisAmt</th>
+            <th>Excise Duty</th>
+            <th>Freight</th>
+            <th>CreditNote</th>
+            <th>InvoiceTotal</th>
+            <th>Rof</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{fngetTotQty()}}</td>
+            <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_Discount" (keyup)='fnGetTotal(-1)'
+                [disabled]='ReceiptInfoMain.Field3 == "Amt"' (click)="$event.target.select()"></td>
+            <td><input type="number" [(ngModel)]="ReceiptInfoMain.DisAmt" (keyup)='fnGetTotal(-1)'
+                [disabled]='ReceiptInfoMain.Field3 == "Pers"' (click)="$event.target.select()"></td>
+            <td><input type="number" [(ngModel)]="ReceiptInfoMain.LandingCost" (keyup)='fnGetTotal(-1)'
+                (click)="$event.target.select()"></td>
+            <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_Freight" (keyup)='fnGetTotal(-1)'
+                (click)="$event.target.select()"></td>
+            <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_DbAmt" (keyup)='fnGetTotal(-1)'
+                (click)="$event.target.select()"></td>
+            <td><input type="number" id="invoTotal" [(ngModel)]="ReceiptInfoMain.Receipt_InvoAmt"
+                (keyup)='fnGetTotal(-1)' (click)="$event.target.select()"></td>
+            <td>{{ReceiptInfoMain.Receipt_ROF}}</td>
+            <td>{{ReceiptInfoMain.Receipt_Total}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-tax">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Tax Details
+            </mat-panel-title>
+            <mat-panel-description>
+              <!-- All Tax Related Details (GST, CESS, ....) -->
+              Include Related Other Charges (GST, CESS, Packing, Shipping, ...)
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="tax-div">
+            <table>
+              <thead>
+                <tr>
+                  <th>Total&nbsp;Sales&nbsp;Value</th>
+                  <th>Address</th>
+                  <th>{{strGSTName}}</th>
+                  <th [hidden]="bHiddenGstCtrl">Cst</th>
+                  <th [hidden]="bHiddenGstCtrl">DLNo</th>
+                  <th>DueDate</th>
+                  <th>Remarks</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+
+
+              <tbody>
+                <tr>
+                
+                  <td>{{txtTotalSalesValue}}</td>
+                  <td><input type="text" [(ngModel)]="ReceiptInfoMain.Receipt_Address" /></td>
+                  <td><input type="text" [(ngModel)]="ReceiptInfoMain.Receipt_Tin1" /></td>
+                  <td [hidden]="bHiddenGstCtrl"><input type="text" [(ngModel)]="ReceiptInfoMain.Receipt_Cst1" /></td>
+                  <td [hidden]="bHiddenGstCtrl"><input type="text" [(ngModel)]="ReceiptInfoMain.Receipt_DLNo1" /></td>
+                  <td>
+                    <input [matDatepicker]="dueDate" autocomplete="off" placeholder="Choose a date"
+                      (click)="dueDate.open()" [(ngModel)]="ReceiptInfoMain.Receipt_Date2">
+                    <mat-datepicker #dueDate></mat-datepicker>
+                  </td>
+                  <td><input type="text" [(ngModel)]="ReceiptInfoMain.Field1" /></td>
+                  <td>
+                    <select [(ngModel)]="ReceiptInfoMain.Receipt_Type" (ngModelChange)='fnGetTotal(-1)'>
+                      <option selected="selected" value="LOCAL">LOCAL</option>
+                      <option value="INTERSTATE">INTERSTATE</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <br />
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Value</th>
+                  <th>{{strSettingTaxName}}Group</th>
+                  <th>{{strSettingTaxName}}%</th>
+                  <th>{{strSettingTaxName}}Amt</th>
+                  <th [hidden]="bHiddenGstCtrl">SGST</th>
+                  <th [hidden]="bHiddenGstCtrl">CGST</th>
+                  <th [hidden]="bHiddenGstCtrl">IGST</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>{{lblOtherCharge}}</td>
+                  <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_Othercharge" (keyup)='fnGetTotal(-1)' />
+                  </td>
+                  <td>
+                    <select [(ngModel)]="ReceiptInfoMain.Receipt_OtherTaxGrpId"
+                      (change)='fnTaxSelectChange($event, "other")'>
+                      <option value="0">--select--</option>
+                      <option *ngFor="let tax of ddlGroups" [value]='tax.TaxID'>
+                        {{tax.TaxName}}
+                      </option>
+                    </select>
+                  </td>
+                  <td>{{ReceiptInfoMain.Receipt_OtherTaxPers}}</td>
+                  <td>{{ReceiptInfoMain.Receipt_OtherTaxAmt | number}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_OtherSGST }}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_OtherCGST}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_OtherIGST}}</td>
+                </tr>
+
+                <tr>
+                  <td>{{lblPackingChg}}</td>
+                  <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_PackingChg" (keyup)='fnGetTotal(-1)' />
+                  </td>
+                  <td>
+                    <select [(ngModel)]="ReceiptInfoMain.Receipt_PackingChgTaxGrpId"
+                      (change)='fnTaxSelectChange($event, "packing")'>
+                      <option value="0">--select--</option>
+                      <option *ngFor="let tax of ddlGroups" [value]='tax.TaxID'>
+                        {{tax.TaxName}}
+                      </option>
+                    </select>
+                  </td>
+                  <td>{{ReceiptInfoMain.Receipt_PackingChgTaxPers}}</td>
+                  <td>{{ReceiptInfoMain.Receipt_PackingChgTaxAmt}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_PackingChgSGST}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_PackingChgCGST}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_PackingChgIGST}}</td>
+                </tr>
+
+                <tr>
+                  <td>{{lblStampingChg}}</td>
+                  <td><input type="number" [(ngModel)]="ReceiptInfoMain.Receipt_StampingChg" (keyup)='fnGetTotal(-1)' />
+                  </td>
+                  <td>
+                    <select [(ngModel)]="ReceiptInfoMain.Receipt_StampingChgTaxGrpId"
+                      (change)='fnTaxSelectChange($event, "stamp")'>
+                      <option value="0">--select--</option>
+                      <option *ngFor="let tax of ddlGroups" [value]='tax.TaxID'>
+                        {{tax.TaxName}}
+                      </option>
+                    </select>
+                  </td>
+                  <td>{{ReceiptInfoMain.Receipt_StampingChgTaxPers}}</td>
+                  <td>{{ReceiptInfoMain.Receipt_StampingChgTaxAmt}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_StampingChgSGST}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_StampingChgCGST}}</td>
+                  <td [hidden]="bHiddenGstCtrl">{{ReceiptInfoMain.Receipt_StampingChgIGST}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <br />
+
+            <table>
+              <thead>
+                <tr>
+                  <th hidden>id</th>
+                  <th>Percentage </th>
+                  <th>Amount</th>
+                  <th>{{strGlobalTaxName}}Amt</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">SGST% </th>
+                  <th style='display:none;'>SGSTAmount</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">SGSTGSTAmt</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">CGST% </th>
+                  <th style='display:none;'>CGSTAmount</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">CGSTGSTAmt</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">IGST% </th>
+                  <th style='display:none;'>IGSTAmount</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">IGSTGSTAmt</th>
+                  <!-- <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">CessAmt</th>
+                  <th [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">AddCessAmt</th> -->
+                </tr>
+              </thead>
+
+              <tbody>
+                <ng-container *ngFor="let tax of jsonTaxData; let i = index">
+                  <tr>
+                    <td hidden>{{tax.TaxId}}</td>
+                    <td>{{tax.TaxPercent}}</td>
+                    <td>{{tax.Amount | number:'1.2-2'}}</td>
+                    <td>{{tax.TaxAmount | number:'1.2-2'}}</td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">{{tax.SGSTTaxPers }}</td>
+                    <td hidden>{{tax.SGSTAmount }}</td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">
+                      {{tax.SGSTTaxAmount | number:'1.2-2'}}
+                    </td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">{{tax.CGSTTaxPers }}</td>
+                    <td hidden>{{tax.CGSTAmount | number:'1.2-2'}}</td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">
+                      {{tax.CGSTTaxAmount | number:'1.2-2'}}
+                    </td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">{{tax.IGSTTaxPers }}</td>
+                    <td hidden>{{tax.IGSTAmount | number:'1.2-2'}}</td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">
+                      {{tax.IGSTTaxAmount | number:'1.2-2'}}
+                    </td>
+                    <!-- <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">
+                      {{tax.CessAmt | number:'1.2-2'}}
+                    </td>
+                    <td [ngStyle]="{'display': strColumnDisplay ? 'none': ''}">
+                      {{tax.AdditionalCessAmt | number:'1.2-2'}}
+                    </td> -->
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <!-- div bill show page list -->
+
+  <div style="padding: 10px;" *ngIf="showBill">
+    <div class="list-header">
+      <div>
+        <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>&nbsp; &nbsp; &nbsp;
+        <mat-form-field appearance='outline'>
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="from" placeholder="Choose FromDate" [(ngModel)]='fromDate'
+            (dateChange)='fnPurchaseGets()'>
+          <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+          <mat-datepicker #from></mat-datepicker>
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field appearance='outline'>
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" [(ngModel)]='toDate'
+            (dateChange)='fnPurchaseGets()'>
+          <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+          <mat-datepicker #topicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select [(value)]="ddlbillGetseries" (selectionChange)='fnPurchaseGets()'>
+            <mat-option *ngFor="let item of jsonBillGetType" [value]='item.PurBillSerId'>
+              {{ item.PurBillSerPrefix }}
+            </mat-option>
+          </mat-select>
+
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <input matInput type='search' [(ngModel)]="purchaseSearch" (keyup)='fnPurchaseGets()'>
+          <mat-icon matSuffix>search</mat-icon>
+          <!-- <mat-hint>Only Order No</mat-hint> -->
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="list-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Edit</th>
+            <th>PurSlNo</th>
+            <th>PurDate</th>
+            <th>InvoNo</th>
+            <th>InvoNo</th>
+            <th>Supplier</th>
+            <th>InvoAmt</th>
+            <th hidden>flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let g of billDataGets"
+            [ngStyle]="{'background-color': g.Flag== 'Cancelled@@@PurchaseDetail' ? '#efa3a3': ''}">
+            <td style="cursor: pointer" (click)="anchorclick(g.Flag, g.PurchaseId, g.SlNo)">
+              <mat-icon style="font-size: 19px;">edit</mat-icon>
+            </td>
+            <td>{{g.SlNo}}</td>
+            <td>{{g.BillDate}}</td>
+            <td>{{g.InvoNo}}</td>
+            <td>{{g.InvoDate}}</td>
+            <td>{{g.Supplier}}</td>
+            <td>{{g.InvoAmt | number:'1.2-2'}}</td>
+            <td hidden>{{g.Flag}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<div class="scautocomplete" *ngIf="productCodeShow" [style.left]="left" [style.top]="top">
+  <app-scodeautocomplete [fillterData]='fillterProduct' (valueChange)='myProductChange($event)'
+    [columnHeader]='prodCodeHeaders' [thHeader]='prodCodeColumn'>
+  </app-scodeautocomplete>
+</div>
+
+<div class="scautocomplete" *ngIf="productShow" [style.left]="left" [style.top]="top">
+  <app-scodeautocomplete [fillterData]='fillterProduct' (valueChange)='myProductChange($event)'
+    [columnHeader]='prodHeaders' [thHeader]='prodColumn'>
+  </app-scodeautocomplete>
+</div>
+
+<!-- All dialogue Modal Here -->
+<!-- Esc button Popup -->
+<div *ngIf="dialogEsc" class="example-box" cdkDrag>
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let c of escHeader">{{c}}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td *ngFor="let c of escHeader">
+          <select *ngIf="c == 'FormulaApply'" [(ngModel)]="ddlRateFormulaApply">
+            <option value="CurrentRow">CurrentRow</option>
+            <option value="ALL">ALL</option>
+          </select>
+
+          <select *ngIf="c == 'Formula'" [(ngModel)]="popEscArray.ddlRateFormulaType">
+            <option value="Pers">Pers</option>
+            <option value="Amt">Amt</option>
+          </select>
+
+          <select *ngIf="c == 'FormulaFrom'" [(ngModel)]="popEscArray.ddlFormulaFrom">
+            <option value="LandingCost">LandingCost</option>
+            <option value="MRP">MRP</option>
+          </select>
+
+          <label *ngIf="c == 'LandingCost'">{{popEscArray.PurRateAdd}}</label>
+          <label *ngIf="c == 'MRP'">{{popEscArray.MRPRateAdd}}</label>
+          <input *ngIf="c == 'R MRP'" type="number" [value]="popEscArray.RetailRateAdd"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'W MRP'" type="number" [value]="popEscArray.WholeRateAdd"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'SpRate1'" type="number" [value]="popEscArray.SpRateOneForCalc"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'SpRate2'" type="number" [value]="popEscArray.SpRateTwoForCalc"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'SpRate3'" type="number" [value]="popEscArray.SpRateThreeForCalc"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'SpRate4'" type="number" [value]="popEscArray.SpRateFourForCalc"
+            (keyup)='fnDiffPriceCalculation()' />
+          <input *ngIf="c == 'SpRate5'" type="number" [value]="popEscArray.SpRateFiveForCalc"
+            (keyup)='fnDiffPriceCalculation()' />
+      </tr>
+    </tbody>
+  </table>
+  <div style="display: flex;  justify-content: flex-end;  margin-top: 3px;">
+    <button mat-button color='primary' (click)="fnEscSave()">Save</button> &nbsp;
+    <button mat-button color='warn' (click)="dialogEsc = false">Cancel</button>
+
+  </div>
+
+</div>
+
+<!-- F9 Popup -->
+<div *ngIf="dialogueTax" class="dialoge-tax" cdkDrag>
+  <h4>Tax Changes</h4>
+  <mat-form-field appearance="outline">
+    <mat-label>Tax</mat-label>
+    <mat-select [(ngModel)]="ddlTaxGroupTaxChange">
+      <mat-option *ngFor="let tax of ddlGroups" [value]='tax.TaxGroupId'>{{tax.TaxName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div>
+    <button mat-button color="primary" (click)="fnTaxApply()">Change</button>
+    <button mat-button color="warn" (click)="dialogueTax = false;bShodowPage = false">Cancel</button>
+  </div>
+</div>
+
+<!-- Previous History popup -->
+<div class="historyPop" *ngIf="prevHistryPop">
+  <div>
+    <button type="button" (click)="prevHistryPop = false">X</button>
+  </div>
+  <div class="div-box">
+    <table>
+      <thead>
+        <tr>
+          <th *ngFor="let col of coumnHisHead">{{col}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of historyJson">
+          <td *ngFor="let col of coumnHisHead">{{item[col]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Phone SerialNoSet popup -->
+<div class="PhoneSerialNoSetPop" *ngIf="PopupPhoneSerialNoSet">
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Products</mat-label>
+      <input matInput placeholder="search product" autocomplete="off" (keyup)="productSearchSerial($event, 'serial')"
+        [(ngModel)]="SerialProdName" (keydown.enter)="serQty.focus()" />
+    </mat-form-field>
+
+    <div *ngIf="showSerialNoProd">
+      <app-scodeautocomplete [fillterData]='fillterProduct' (valueChange)='ProductserialNoGet($event)'
+        [columnHeader]='prodHeaders' [thHeader]='prodColumn'>
+      </app-scodeautocomplete>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Enter Quantity</mat-label>
+      <input #serQty matInput type="number" placeholder="quantity" />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <button mat-button color="primary" (click)="fnSerialNoSubmit(serQty.value)">Submit</button>
+    <button mat-button color="warn" (click)="PopupPhoneSerialNoSet = false; SerialProdName = ''">Cancel</button>
+  </div>
+</div>
+
+<!-- product Size Popup -->
+
+<div class="PhoneSerialNoSetPop" *ngIf="popupSize">
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Products</mat-label>
+      <input matInput placeholder="search product" autocomplete="off" (keyup)="productSearchSerial($event, 'size')"
+        [(ngModel)]="SerialProdName" />
+    </mat-form-field>
+    <!-- (keydown.enter)="serQty.focus()" -->
+    <div *ngIf="showSizeProd">
+      <app-scodeautocomplete [fillterData]='fillterProduct' (valueChange)='ProductserialNoGet($event)'
+        [columnHeader]='prodHeaders' [thHeader]='prodColumn'>
+      </app-scodeautocomplete>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Size</mat-label>
+      <mat-select [(ngModel)]="ddlCategorySize">
+        <mat-option *ngFor="let size of jsonCategorySize" [value]='size.CategoryHead_Id'>
+          {{size.CategoryHead_Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <button mat-button color="primary" (click)="fnSizeSubmit()">Submit</button> &nbsp;
+    <button mat-button color="warn" (click)="popupSize = false; SerialProdName = ''">Cancel</button>
+  </div>
+</div>
+
+<!-- printPricemenu Popup -->
+
+<div *ngIf="popupPrintPrice" class="popupPrice mat-elevation-z8">
+  <mat-selection-list #prices>
+    <mat-list-option *ngFor="let price of typesOfPrice" [value]="price" color='warn'>
+      {{price}}
+    </mat-list-option>
+  </mat-selection-list>
+  <mat-divider></mat-divider>
+
+  <div style="margin-top: 5px;text-align: right">
+    <button mat-button color="warn" (click)="popupPrintPrice = false">Cancel</button>&nbsp;
+    <button mat-button color="primary" (click)="fnPreviewPrint()">print</button>
+  </div>
+  <!-- <p>
+        Options selected: {{prices.selectedOptions.selected.length}}
+      </p> -->
+</div>
+
+<!-- product autocomplete -->
+
+<div  fxLayout='column' *ngIf='popProduct && fillterProduct &&  fillterProduct.length'
+ [style.left]="pleft" [style.top]="ptop" class="popProduct">
+ <div fxLayoutAlign='start center' class='popSearch'>
+   <label>Name</label>
+      <input id='popFocus' fxFlex='100' [value]='txtpoName' (input)='filterProduct($event)'>
+      <button mat-icon-button>
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <button mat-icon-button color='warn' (click)="popProduct = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <app-pop-autocomplete [column]='prodColumn' [dataSource]='fillterProduct'
+  [headerCol]='prodHeaders' (popvalueChange)='popRowClick($event)'> </app-pop-autocomplete>
+ 
+</div>
+
+<div fxLayout='column' *ngIf='popItemProduct && fillterProduct &&  fillterProduct.length'
+ [style.left]="pleft" [style.top]="ptop" class="popProduct">
+ <div fxLayoutAlign='start center' class='popSearch'>
+   <label>Name</label>
+      <input id='popFocus' fxFlex='100' [value]='txtpoName' (input)='filterItemProduct($event)'>
+      <button mat-icon-button>
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <button mat-icon-button color='warn' (click)="popItemProduct = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+ 
+  <app-pop-autocomplete [column]='prodCodeColumn' [dataSource]='fillterProduct'
+  [headerCol]='prodCodeHeaders' (popvalueChange)='popRowClick($event)'> </app-pop-autocomplete>
+</div>

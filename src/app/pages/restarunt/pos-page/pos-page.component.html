@@ -1,0 +1,359 @@
+
+<div [fxShow]='!toggleFlag' fxLayout="column" class="mai-wrapper" fxLayoutGap='10px'>
+  <!-- <a routerLink='/print/printout'>sample print</a> -->
+  <div fxLayout="column" fxLayoutAlign='start center' class="top-header" fxFlexFill>
+
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="common-header">
+      <label for="tables" fxFlex='10' class="lab" *ngIf="!btnRoom && !touchOnOff">Tables</label>
+      <label for="salesman" fxFlex='25' class="lab">Salesman</label>
+      <label for="customer" fxFlex='25' class="lab">Customer Name</label>
+      <label for="bill" fxFlex='10' class="lab">Bill Type</label>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="common-header">
+      <div *ngIf="!btnRoom && !touchOnOff" fxFlex='10' fxFlex.lt-sm='100' fxLayoutAlign='start center'
+        class="form-group">
+        <input #tblname placeholder="Table" class="focus-input" fxFlex='100' autofocus [formControl]="tableControl"
+          [matAutocomplete]="tableauto" [attr.disabled]="chkDisabled ? true : null" />
+        <mat-progress-spinner *ngIf="tbloading" class="loading-spinner" color="warn" mode="indeterminate" diameter="20">
+        </mat-progress-spinner>
+
+        <mat-autocomplete autoActiveFirstOption #tableauto="matAutocomplete">
+          <mat-option [id]="option.Table_Id" *ngFor="let option of filteredTable" [value]="option.TableDetailsCode"
+            (onSelectionChange)="selectTableDetail(option,'normal')">
+            {{option.TableDetailsCode}}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div fxFlex='25' fxFlex.lt-sm='100' fxLayoutAlign='start center' class="form-group input-button">
+        <input #salesman placeholder="Salesman" fxFlex='85' autofocus [formControl]="salesControl"
+          [matAutocomplete]="salesmanauto" [attr.disabled]="chkDisabled ? true : null"  class="focus-input"/>
+        <button fxFlex='15' (click)="createAccountHead('salesman')">
+          <mat-icon>add</mat-icon>
+        </button>
+        <mat-progress-spinner *ngIf="salesloading" class="loading-spinner" color="warn" mode="indeterminate"
+          diameter="20">
+        </mat-progress-spinner>
+
+        <mat-autocomplete autoActiveFirstOption #salesmanauto="matAutocomplete">
+          <mat-option [id]="option.AC_Id" *ngFor="let option of filteredSalesman" [value]="option.AC_Name"
+            (onSelectionChange)="salesmanChange(option)">
+            {{option.AC_Name}}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div fxLayout='row' fxFlex='25' fxFlex.lt-sm='100' class="input-button">
+        <input fxFlex='100' placeholder="Customer Name" class="focus-input" [(ngModel)]="objkotMain.Kot_CustName" [disabled]='btnRoom'>
+        <!-- <button fxFlex='15' (click)="createAccountHead('customer')">
+          <mat-icon>add</mat-icon>
+        </button> -->
+      </div>
+
+      <select fxFlex='10' fxFlex.lt-sm='100' [(ngModel)]="objkotMain.BillSerId">
+        <option *ngFor="let BillSerice of billserice" [value]="BillSerice.BillSerId">
+          {{BillSerice.BillSerPrefix}}
+        </option>
+      </select>
+      <select fxFlex='8' fxFlex.lt-sm='100' [(ngModel)]="PayTerms">
+        <option value="CASH">CASH</option>
+        <option value="CARD">CARD</option>
+        <option value="CREDIT">CREDIT</option>
+      </select>
+      <mat-slide-toggle color='primary' [(ngModel)]="touchOnOff" matTooltip="Touch screen" (change)='toggleChange($event)'></mat-slide-toggle>
+
+      <div *ngIf="touchOnOff" fxLayout='row' fxFlex='20' fxLayoutGap="20px">
+        <span *ngIf="strSelectedTableName">Table :&nbsp;{{strSelectedTableName}}</span>
+        <span *ngIf="strSelectedTableChairName">Chair :&nbsp;{{strSelectedTableChairName}}</span>
+        <span *ngIf="strRoomNo">Room No :&nbsp;{{strRoomNo}}</span>
+      </div>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="common-header labs">
+      <label for="product" fxFlex='37' class="lab" *ngIf="!touchOnOff">
+        Product (Code) <input type="checkbox" [(ngModel)]="chkCode" class="focus-input" style="height: auto;">
+      </label>
+      <label for="qty" fxFlex='10' class="lab" *ngIf="!touchOnOff">Qty</label>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="common-header">
+      <div fxFlex='37' *ngIf="!touchOnOff" fxFlex.lt-sm='100' fxLayoutAlign='start center' class="form-group">
+
+        <input #product placeholder="Product" fxFlex='100' autofocus [formControl]="productControl"
+          [matAutocomplete]="productauto" (click)="product.select()" class="focus-input"
+          matAutocompleteTriggerAccessor [optionHeight]="35" >
+
+        <mat-progress-spinner *ngIf="productloading" class="loading-spinner" color="warn" mode="indeterminate"
+          diameter="20">
+        </mat-progress-spinner>
+        <!-- ProductId -->
+        <mat-autocomplete autoActiveFirstOption [panelWidth]='btnRoom ? "300px": "500px"'
+         #productauto="matAutocomplete" class="ntr-autocomplete"
+          (optionSelected)="productChange($event)">
+          <div *ngIf="!btnRoom" fxFlex fxLayoutGap="1px" class="auto-header">
+            <div fxFlex='20' class="col-ht" [fxShow]='chkCode'>
+                Code
+            </div>
+            <div [fxFlex]='chkCode ? "50": "70"' class="col-ht">ProductName</div>
+            <div fxFlex='15' class="col-ht">Stock</div>
+            <div fxFlex='15' class="col-ht">SelRate</div>
+          </div>
+
+          <mat-option [id]="option.ProductId" *ngFor="let option of filteredProduct" class="set-option" [value]="option.ProductName">
+            <div *ngIf="btnRoom" fxLayout='row' fxLayoutAlign='space-between center'>
+              <span>{{ option.ProductName }}</span>
+              <span> ₹&nbsp;{{ option.Sel_Rate }}</span>
+            </div>
+
+            <div fxFlex *ngIf="!btnRoom">
+              <div fxFlex='20' [fxShow]='chkCode' class="font-12 col-pad" >{{ option.ItemCode}}</div>
+              <div [fxFlex]='chkCode ? "50": "70"' class="font-12 col-pad" >{{ option.ProductName }}
+              </div>
+              <div fxFlex='15' class="font-12 col-pad" >{{ option.BalanceQty }}</div>
+              <div fxFlex='15' class="font-12 col-pad" style="border-right: 1px solid #333;"> ₹&nbsp;{{ option.Sel_Rate }}</div>
+            </div>
+
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <input #qty *ngIf="!touchOnOff" placeholder="Quantity" fxFlex='10' type="number" class="focus-input" [(ngModel)]="dStrQty"
+        fxFlex.lt-sm='100' (keydown.enter)='fnAddRow(qty.value)'>
+      <!-- <div fxFlex='20%' class="col-h" *ngIf="!touchOnOff">
+                <mat-checkbox [(ngModel)]="chkCode">Productcode Visible
+                </mat-checkbox>
+            </div> -->
+      <div fxFlex='20%'>
+        <mat-checkbox color='primary' [fxShow]="!btnRoom && !touchOnOff" matTooltip='Normal'
+          (change)='fnNormalChange($event)'>Auto Assign
+        </mat-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayout.lt-sm='column'>
+
+    <div [fxFlex]='touchOnOff && !toggleFlag? "40": "100"' fxFlex.lt-sm='100'
+      [fxLayout]='touchOnOff && !toggleFlag? "column": "row"' fxLayout.lt-sm='column'>
+
+      <div [fxFlex]='touchOnOff && !toggleFlag? "50": "100"' fxFlex.lt-sm='100'>
+        <span class="mute-text">New Order Table</span>
+        <div #posscroll class="pos-table">
+          <table class="table-lists">
+            <thead>
+              <tr>
+                <!-- <th>Del</th> -->
+                <th>No</th>
+                <th>Product Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Dis(%)</th>
+                <th>Gst(%)</th>
+                <th>Amount</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of fieldArray; let i = index" (click)="rowClick(item,i)"
+                [ngClass]="{'rowhighlight': rowId == i}" (load)="onscroll(i)" id="msgContainer">
+                <!-- <td>
+                                <button mat-icon-button (click)="rowdelete(item)" color="primary"
+                                    aria-label="Example icon button with a home icon">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td> -->
+                <td>{{i+1}}</td>
+                <td>{{item.prodName}}</td>
+                <td [style.background]="rowId == i? 'chartreuse': ''">{{item.qty}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.dis}}</td>
+                <td>{{item.tax}}</td>
+                <td>{{item.amount}}</td>
+              </tr>
+            </tbody>
+
+            <!-- <tfoot>
+                        <tr>
+
+                            <td colspan="6">Kot Total</td>
+                            <td colspan="2">0.00</td>
+                        </tr>
+                    </tfoot> -->
+          </table>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign='end center' fxLayoutAlign.lt-sm='space-between center' class="footer-col">
+          <div class="text" fxFlex='20%'>Kot Total</div>
+          <div class="sub-text" fxFlex='20%'>₹&nbsp;{{kotTotal | number:'1.2-2'}}</div>
+          <!-- kotTotal -->
+        </div>
+      </div>
+
+      <div [fxFlex]='touchOnOff && !toggleFlag? "50": "100"' fxFlex.lt-sm='100'>
+        <span class="mute-text">Previous Order Table</span>
+        <div class="pos-table">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Product Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Dis(%)</th>
+                <th>Gst(%)</th>
+                <th>Amount</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of billDetailed; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.ProductName}}</td>
+                <td>{{item.KotSub_Qty}}</td>
+                <td>{{item.KotSub_ActualRate}}</td>
+                <td>{{item.KotSub_DisPers}}</td>
+                <td>{{item.TaxPercent}}</td>
+                <td>{{item.KotSub_Amt}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign='end center' fxLayoutAlign.lt-sm='space-between center' class="footer-col">
+
+          <div *ngIf="discountFlag" fxLayout="row" class="footer-discount">
+            <div fxLayout='column'>
+              <select [(ngModel)]="dropDisc">
+                <option value="perc">Disc(%)</option>
+                <option value="amnt">DiscAmt</option>
+              </select>
+
+              <input type="text" disabled name='DiscAmt'  class="focus-input textDiscount" placeholder="Disc Amount">
+            </div>
+
+            <div fxLayout='column'>
+              <input [value]='finalPers' class="focus-input" (keyup)="fnGetDiscount($event,'Perc')"
+                [attr.disabled]="dropDisc == 'amnt' ? true: null">
+
+              <input [value]='finalAmount' class="focus-input" (keyup)="fnGetDiscount($event,'Amnt')"
+                [attr.disabled]="dropDisc == 'perc' ? true: null">
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div class="text">Bill Total</div>
+            <div class="sub-text">₹&nbsp;{{strBillTotal| number:'1.2-2'}}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div fxFlex='60' *ngIf="touchOnOff && !toggleFlag" class="product-lists">
+      <app-pos-touch (valueChanges)='getProductDetails($event)' [folder]='settings.getImagePath'></app-pos-touch>
+
+    </div>
+
+  </div>
+</div>
+
+<div [fxShow]='toggleFlag' fxLayout='column' fxLayoutAlign='start start' class="table-view">
+  <div class="p-a" fxLayoutGap='5px'>
+    <mat-button-toggle-group name="SelectStyle" aria-label="Select Style" appearance='standard'
+      (change)='btntoggleChange($event.value)'>
+      <mat-button-toggle value="table" [checked]='btntoggle'>Table</mat-button-toggle>
+      <mat-button-toggle value="room">Room</mat-button-toggle>
+    </mat-button-toggle-group>
+    <button mat-button color="warn" (click)=" touchOnOff = false; toggleFlag = false;">Close</button>
+  </div>
+  <div fxLayout='row' style="width: 100%;">
+    <div fxFlex='50%'>
+      <div *ngIf="btntoggle" fxFlexFill fxLayout='row wrap'>
+        <div fxFlex='20' fxFlex.lt-sm='40' class="p-a" *ngFor="let table of tableSource; let i = index">
+          <div (click)="tableclick(table, i)" class="btn-group" matRipple fxLayoutAlign='center center'
+            [ngClass]="{'btnstatus' : ((table.TableStatus == 'Yes') && i != curntItm) ,'btnhighlight':(i == curntItm)}">
+            <div class="btn-col">{{table.TableName}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!btntoggle">
+        <div fxFlex='20' fxFlex.lt-sm='40' class="p-a" *ngFor="let room of roomsData; let i = index">
+          <div (click)="roomClick(room, i)" matRipple class="btn-group"
+           [ngClass]="{'btnhighlight':(i == curntItm), 'tblhighlight' : room.BillNo != 0 }" fxLayoutAlign='center center'>
+            <div class="btn-col">{{room.Room_No}}</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div fxFlex='50%' fxFlexFill class="p-a">
+      <div *ngIf="loadingListData" fxLayoutAlign='center center' style="height: 200px;">
+        <mat-spinner strokeWidth='5'></mat-spinner>
+      </div>
+
+      <div fxLayout='row wrap' *ngIf="tblListData.length">
+        <div fxFlex='20' matRipple *ngFor="let item of tblListData" fxLayoutAlign='center center'
+          [ngClass]="{'tblhighlight' : item.BillNo != 0 }" class="btn-card" (click)="selectTableDetail(item,'touch')">
+          <div class="btn-col">{{item.TableDetails_Name}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div [style.visibility]="!bAlreadyExist? 'hidden': 'visible'" fxLayout='column' class="alert-box">
+  <!-- *ngIf="bAlreadyExist" -->
+  <h2>Alert!</h2>
+  <p>This Product Already exists!!!</p>
+
+  <div fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='10px' class="bottom">
+    <!-- <button #addqty mat-raised-button color='primary' id="addQty" matTooltip="Left Arrow" (keydown.rightarrow)="replace.focus()" (click)="addQuantity()">Add</button> -->
+    <input #addqty type="submit" class="item-input focus-input" id="addQty" (click)="addQuantity()"
+      (keydown.ArrowRight)="replace.focus()" value="Add">
+    <input #replace type="submit" class="item-input focus-input" id="replace" (click)="fnReplace()"
+      (keydown.ArrowRight)="cancel.focus()" (keydown.ArrowLeft)="addqty.focus()" value="Replace">
+    <input #cancel type="submit" class="item-input focus-input" id="cancel" (click)="bAlreadyExist = false;fnCancel()"
+      value="Cancel" (keydown.ArrowLeft)="replace.focus()">
+    <!-- <button #replace mat-raised-button color='accent' id="replace" matTooltip="Right Arrow" (click)="fnReplace()">Replace</button> -->
+    <!-- <button #cancel mat-raised-button color='warn' (click)="bAlreadyExist = false">Cancel</button> -->
+</div>
+</div>
+
+
+<div [fxShow]='!toggleFlag' fxLayout='row' fxLayout.lt-sm='row wrap' class="footer-button">
+
+  <button fxFlex='5' class="btn-bill btn-add" matRipple matTooltip="Increase Quantity" [disabled]='rowId == null' (click)="increase()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button fxFlex='5' class="btn-bill btn-minus" matRipple matTooltip="Decrease Quantity" [disabled]='rowId == null' (click)="decrease()">
+    <mat-icon>remove</mat-icon>
+  </button>
+
+  <button fxFlex='5' (click)="fnBtnRefresh()" matTooltip="Refresh" class="btn-bill btn-refresh" matRipple>
+    <mat-icon>refresh</mat-icon>
+  </button>
+
+  <button fxFlex='5' class="btn-bill btn-remove" matTooltip="Remove" matRipple [disabled]='rowId == null' (click)="removeRow()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <button fxFlex='15' class="btn-bill btn-Disc"  matRipple matTooltip="Discount" (click)="discountFlag = !discountFlag" >
+    {{discountFlag ? "Disc Off": "Disc On"}}
+  </button>
+
+  <button fxFlex='15' *ngIf="!touchOnOff" (click)="fnBtnRoom()" class="btn-bill btn-room"
+    matRipple matTooltip="Order Type">{{selectType =='Room'?"Table": "Room"}}</button>
+
+  <button fxFlex='20' *ngIf="!btnRoom" class="btn-bill btn-settile" matRipple matTooltip="Settile"
+    [disabled]="billDetailed.length && !fieldArray.length ? false: true" (click)="saveBill()">
+    Settile (F4)</button>
+
+  <button fxFlex='20' class="btn-bill btn-kotbill" matRipple [disabled]='!fieldArray.length || chkDisabled'
+    (click)="fnsaveKot()" matTooltip="Kot Bill">Kot Bill (F2)</button>
+
+  <button fxFlex='15' matRipple matTooltip="DirectBill" [disabled]='!chkDisabled' class="btn-bill btn-settile" (click)="fnSaveDirectBill()">
+    DirectBill (F8)
+  </button>
+  <button fxFlex='15' class="btn-bill btn-cancel" matRipple matTooltip="Cancel" (click)="fnClear()">Cancel</button>
+</div>

@@ -1,0 +1,50 @@
+.container {
+  margin-top: 20px;
+  margin-left: 20px;
+
+  .btn-color {
+    .mat-flat-button {
+      height: 30px;
+      min-width: 10px;
+    }
+  } 
+}
+// .selected {
+//   border: 1px solid #48b72c !important;
+//   font-weight: bold;
+//   background-color:green ;
+//   color: white !important;
+// }
+.booked{  
+    border: 1px solid #9c2017  !important;
+    background-color:red !important;
+    color:white;
+    font-weight:bold;      
+}
+.tbl-report {
+
+  table {
+    th {
+      background: #673ab7;
+      color: #fff;
+    }
+  }
+}
+.button-row {
+
+  .mat-flat-button {
+    background: silver;
+    height: 80px;
+    width: 125px;
+    border: 1px solid silver;
+    color: black;
+    background-size: cover;
+  }
+
+  .btn-roomregister {
+    .room-type {
+      font-size: 11px;
+      float: right;
+    }
+  }
+}

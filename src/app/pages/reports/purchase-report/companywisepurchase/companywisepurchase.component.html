@@ -1,0 +1,139 @@
+<section fxLayout="column" fxLayoutGap='10px' style="margin-top: 20px;margin-left: 10px;margin-right: 10px;">
+    <div fxLayout="column" *ngIf="!showReport" fxLayoutGap='10px'>
+      <div fxLayout="row" fxLayout.lt-sm="column" ngStyle.gt-sm="border-bottom: 1px solid #ccc;">
+        <div fxLayoutGap='10px' fxLayout.lt-sm="column" fxLayoutAlign.lt-sm='center center' class="box_fts">
+          <mat-form-field appearance='outline'>
+            <mat-label>From Date</mat-label>
+            <input matInput [matDatepicker]="from" placeholder="Choose FromDate" [(ngModel)]='fromDate'>
+            <!-- (dateChange)='fnPurchaseGets()' -->
+            <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+            <mat-datepicker #from></mat-datepicker>
+          </mat-form-field>
+  
+          <mat-form-field appearance='outline'>
+            <mat-label>To Date</mat-label>
+            <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" [(ngModel)]='toDate'>
+            <!-- (dateChange)='fnPurchaseGets()' -->
+            <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+            <mat-datepicker #topicker></mat-datepicker>
+          </mat-form-field>
+  
+  
+        </div>
+  
+        <div fxFlex fxLayoutAlign.gt-sm='end center' fxLayoutAlign.lt-sm='center start' fxLayoutGap='10px'>
+          <mat-spinner diameter='20' color='warn' *ngIf="loading"></mat-spinner>
+          <button mat-raised-button color='primary' (click)="fnSubmit()">submit</button>
+        </div>
+      </div>
+      <!-- //start -->
+      <div fxFlex='100' fxLayout="column" fxLayoutGap='10px'>
+  
+        <div fxLayout='row'>
+          <mat-tab-group mat-stretch-tabs fxFlex='100' color='warn' [selectedIndex]='selectedTab'
+            (selectedIndexChange)='fntabChange($event)'>
+            <mat-tab *ngFor="let tab of tabBills" [label]="tab">
+  
+            </mat-tab>
+          </mat-tab-group>
+  
+          <!-- <mat-radio-group fxLayoutGap='10px' (change)='radioChange($event)' fxLayout.lt-sm='column' [(ngModel)]="selectbills" color='warn'>
+                  <mat-radio-button *ngFor="let tab of tabBills" [value]="tab">{{tab}}</mat-radio-button>
+                 
+                </mat-radio-group> -->
+  
+        </div>
+  
+        <div fxFlex='100%' class="min_height">
+          <mat-progress-bar mode="indeterminate" *ngIf="processing"></mat-progress-bar>
+        </div>
+  
+        <div fxLayout='row' fxLayout.lt-sm='column' fxLayoutGap='10%' fxLayoutAlign.gt-sm='start start'>
+  
+          <div fxLayout='column' fxFlex.lt-sm='100%' fxFlex.gt-sm='45%' class="box_fts">
+            <mat-form-field appearance="outline">
+              <mat-label>Search</mat-label>
+              <input matInput type='search' (keyup)="companyFilter($event.target.value)">
+              <mat-icon matSuffix>search</mat-icon>
+              <!-- <mat-hint>Only Order No</mat-hint> -->
+            </mat-form-field>
+  
+            <div class="agent_div mat-elevation-z8 ">
+  
+              <table mat-table [dataSource]="dataSource">
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()" color='warn'>
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)" color='warn'>
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+  
+                <!-- Position Column -->
+                <ng-container matColumnDef="ManufactureName">
+                  <th mat-header-cell *matHeaderCellDef>Manufacture Name</th>
+                  <td mat-cell *matCellDef="let element"> {{element.ManufactureName}} </td>
+                </ng-container>
+  
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+                </tr>
+              </table>
+            </div>
+          </div>
+  
+          <div fxLayout='column' fxFlex.lt-sm='100%' fxFlex.gt-sm='45%' class="box_fts"
+            *ngIf="selectedTab == 1 || selectedTab == 2 ">
+            <mat-form-field appearance="outline">
+              <mat-label>Search</mat-label>
+              <input matInput type='search' (keyup)="dataFieldFilter($event.target.value)">
+              <mat-icon matSuffix>search</mat-icon>
+              <!-- <mat-hint>Only Order No</mat-hint> -->
+            </mat-form-field>
+  
+            <virtual-scroller *ngIf="dataBills && dataBills.data.length" #scroll [items]="dataBills.filteredData"
+              class="right_div mat-elevation-z8">
+              <table>
+                <thead #header>
+                  <tr>
+                    <th>
+                      <mat-checkbox (change)="$event ? itsmasterToggle() : null"
+                        [checked]="Billselection.hasValue() && itsAllSelected()"
+                        [indeterminate]="Billselection.hasValue() && !itsAllSelected()" color='warn'>
+                      </mat-checkbox>
+                    </th>
+                    <th>{{ColumnsDynamic[1]}}</th>
+                  </tr>
+                </thead>
+                <tbody #container>
+                  <tr *ngFor="let item of scroll.viewPortItems">
+                    <td>
+                      <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? Billselection.toggle(item) : null" [checked]="Billselection.isSelected(item)"
+                        color='warn'>
+                      </mat-checkbox>
+                    </td>
+                    <td>{{item[ColumnsDynamic[0]]}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </virtual-scroller>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="showReport" fxLayout="column" fxLayoutGap='10px'>
+      <app-report-content [dataSource]='dataRep' [ReportHeadName]='strReportHeadName'
+        (valueChange)='myPageChange($event)'>
+      </app-report-content>
+    </div>
+  </section>
+  

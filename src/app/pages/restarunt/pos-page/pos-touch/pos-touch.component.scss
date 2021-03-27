@@ -1,0 +1,102 @@
+.content-main {
+  width: 100%;
+  user-select: none;
+  .minWidth {
+    min-width: 100%;
+  }
+  .categoryhead-touch {
+    padding: 5px;
+    height: 60px;
+    overflow: hidden;
+    .col {
+      font-weight: 600;
+      // background: #ffd0d0;
+      background: none;
+      color: #fa9898;
+      border: 1px solid;
+      // background: linear-gradient(90deg, rgba(231,176,176,1) 23%, rgba(249,198,198,1) 49%, rgba(255,218,218,1) 100%);
+      // color: black;
+      word-break: break-word;
+      text-align: center;
+      cursor: pointer;
+
+      span {
+        margin: 0;
+        font-size: 12px;
+        // font-family: cursive;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.category-touch {
+  padding: 5px;
+  height: 70px;
+  .col-cat {
+    // background: #84f9d3e3;
+    // color: black;
+    background: none;
+    color:#1cdeb1;
+    border: 1px solid;
+    font-weight: 600;
+    word-break: break-word;
+    text-align: center;
+    min-width: 20%;
+    padding: 2px;
+    cursor: pointer;
+
+    span {
+      margin: 0;
+      font-size: 12px;
+      // font-family: cursive;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.product-touch {
+  padding: 5px;
+  height: 96px;
+  cursor: pointer;
+  .banner-img {
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #bea158;
+    padding: 5px;
+    user-select: none;
+
+  }
+  span {
+
+    text-align: center;
+    background: #fff;
+    border-radius: 1px;
+    color: #424242;
+    padding: 3px;
+    font-family: cursive;
+    font-size: 12px;
+    text-transform: capitalize;
+    max-height: 200px;
+    max-height: 200px;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+  }
+}
+
+.active-categoryhead {
+  background-color:#fd9898 !important;
+  color: #463f3f !important;
+}
+
+.active-category {
+  background-color:#1cdeb1 !important;
+  color: #463f3f !important;
+}

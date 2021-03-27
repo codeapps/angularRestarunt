@@ -1,0 +1,61 @@
+<section class="container">
+    <div>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="25"fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+                <!-- <button mat-raised-button color="primary" (click)="fnAddRow()">Add Row</button> -->
+            </div>
+            <div fxFlex="30" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Table Select</mat-label>
+                    <mat-select [(ngModel)]="tableId" (selectionChange)="fnTableOnChange()">
+                        <mat-option *ngFor="let item of addTables" [value]="item.TableId">{{item.TableName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">Add</th>
+                            <th style="width:60px;">Remove</th>
+                            <th style="width:30px;">No</th>
+                            <th style="width: 50%;">Table Name</th>
+                            <th>Code</th>                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tableDetailsSource; let i = index">
+                            <td>
+                                <button (click)='fnAddRow(item)'>
+                                    <span class="material-icons">
+                                        add_box
+                                    </span>
+                                </button>
+                            </td>
+                            <td>
+                                <button (click)='removeRow(item)'>
+                                    <span class="material-icons">
+                                        delete_sweep
+                                    </span>
+                                </button>
+                            </td>
+                            <td>{{i+1}}</td>
+                            <td>
+                                <input id="txtTableDetails_Name{{i}}" [(ngModel)]="item.TableDetailsName" 
+                                    (keydown.enter)='qty.focus()'>
+                            </td>                           
+                            <td>
+                                <input #qty id="txtTableDetails_Code{{i}}" [(ngModel)]="item.TableDetailsCode">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

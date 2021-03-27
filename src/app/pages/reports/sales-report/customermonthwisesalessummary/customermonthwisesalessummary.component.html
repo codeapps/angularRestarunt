@@ -1,0 +1,37 @@
+<section fxLayout="column" fxLayoutGap='10px'>
+    <div fxLayout="column" *ngIf="!showReport" fxLayoutGap='10px'>
+      <div fxLayout="row" fxLayout.lt-sm="column" ngStyle.gt-sm="border-bottom: 1px solid #ccc;">
+  
+        <div fxFlex fxLayoutAlign='start start' fxLayoutGap='10px'>
+          <mat-form-field appearance='outline'>
+            <mat-label>Month</mat-label>
+            <input matInput type='number' [(ngModel)]="NoofMonth">
+          </mat-form-field>
+          <button mat-raised-button color='primary' (click)="fnSubmit()">
+            submit
+            <mat-icon matPrefix *ngIf="loading">
+              <mat-spinner diameter='20' color='warn'></mat-spinner>
+            </mat-icon>
+  
+          </button>
+  
+        </div>
+  
+        <div fxFlex fxLayoutAlign.gt-sm='end center' fxLayoutGap='10px'>
+          <mat-radio-group fxLayoutGap='10px' (change)='radioChange($event)' fxLayout.lt-sm='column'
+            [(ngModel)]="selectbills" color='warn'>
+            <mat-radio-button *ngFor="let tab of tabBills" [value]="tab">{{tab}}</mat-radio-button>
+  
+          </mat-radio-group>
+  
+        </div>
+      </div>
+  
+    </div>
+    <div *ngIf="showReport" fxLayout="column" fxLayoutGap='10px'>
+      <app-report-content [dataSource]='dataRep' [ReportHeadName]='strReportHeadName'
+        (valueChange)='myPageChange($event)'>
+      </app-report-content>
+    </div>
+  </section>
+  

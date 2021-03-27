@@ -1,0 +1,270 @@
+<div class="mat-elevation-z1 text-muted" style="margin-top: 20px; margin-left: 20px;padding: 5px;">
+    <div class="example-form">
+
+
+        <!-- <mat-form-field>
+         <input ngui-auto-complete matInput (click)="$event.target.select()"
+        [(ngModel)]="strHeadName"
+        [source]="findName"
+        no-match-found-text=' '
+         [accept-user-input]="true"
+         [list-formatter]="renderName"
+         (valueChanged)="myCallback($event)"
+         placeholder="Search for a name"
+         value-property-name="AC_Id"
+         display-property-name="AC_Name"
+         [header-item-template]="nameHeaderTemplate"
+         min-chars="1"
+         [open-on-focus]="false"
+         [ignore-accents]='false' />
+       </mat-form-field> -->
+
+
+        <div class="main-autocomplete" style="display: initial;">
+            <mat-form-field>
+                <input id="txtLedger" #txtInput matInput autocomplete="off" placeholder="Search for a name"
+                    (click)="$event.target.select()" (keyup)="onKey($event)" [(ngModel)]="strHeadName"
+                    (keydown.enter)="txtInput.blur()" />
+            </mat-form-field>
+
+            <app-scodeautocomplete *ngIf="selectcomplete" [fillterData]='fillterItems'
+                (valueChange)='myCallback($event)' [columnHeader]='colHeaders' [thHeader]='thHeader'>
+            </app-scodeautocomplete>
+
+        </div>
+        &nbsp;
+        <mat-form-field>
+            <input matInput placeholder="Address" [value]='Address' disabled>
+        </mat-form-field>
+        <!-- <span>Address: &nbsp;<b>{{ Address }}</b></span> -->
+        &nbsp;
+        <mat-form-field>
+            <input matInput placeholder="Phone" [value]='Phone'>
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field style="width:120px;">
+            <input matInput [max]='MaxDate' placeholder="From Date" (dateChange)="DateChange()"
+                (click)="Frompicker.open()" id="fromdate" [(ngModel)]=FromDate [matDatepicker]="Frompicker">
+            <mat-datepicker-toggle matSuffix [for]="Frompicker"></mat-datepicker-toggle>
+            <mat-datepicker #Frompicker></mat-datepicker>
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field style="width:120px;">
+            <input matInput [max]='MaxDate' placeholder="To Date" (dateChange)="DateChange()" (click)="Topicker.open()"
+                id="Todate" [(ngModel)]=ToDate [matDatepicker]="Topicker">
+            <mat-datepicker-toggle matSuffix [for]="Topicker"></mat-datepicker-toggle>
+            <mat-datepicker #Topicker></mat-datepicker>
+        </mat-form-field>
+        &nbsp;
+
+        <mat-checkbox color='primary' [(ngModel)]="checked">
+            All
+        </mat-checkbox>
+        &nbsp;
+        <button mat-raised-button color="primary" class="mat-elevation-z6" (click)="onclick()">submit</button>
+        &nbsp;
+        <button *ngIf="divShow" mat-stroked-button [matMenuTriggerFor]="menu">More</button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)='openDialog("Outstanding")'>Outstanding</button>
+            <button mat-menu-item (click)='openSmsDialog()'>Sms</button>
+            <button mat-menu-item (click)='fnSendEmail()'>Email</button>
+            <button mat-menu-item (click)='openDialog("Voucher")'>Voucher</button>
+            <button mat-menu-item (click)='openDialog("CashBill")'>Cash Bill</button>
+        </mat-menu>
+        &nbsp;
+        <mat-form-field *ngIf="ddlEntryShow">
+            <mat-select [(value)]="selected">
+                <mat-option value="0">None</mat-option>
+                <mat-option *ngFor="let item of ddlEntryHead" value="{{item.EntryHeadId}}">{{item.EntryHead_Name}}
+                </mat-option>
+
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="divShow">
+
+        <div>
+
+            <mat-progress-bar *ngIf="loading" mode='indeterminate' color='primary' class="example-margin">
+            </mat-progress-bar>
+            <!-- <mat-form-field >
+                 <input matInput placeholder="search" (keyup)="searchHead($event)"/>
+               </mat-form-field>
+ 
+             <ejs-grid #tblReport id='tblReport' gridLines="Both"  [dataSource]='dataRepTemp'   rowHeight='20' height='400' [toolbar]="toolbar"  showColumnChooser='true'
+             (toolbarClick)='toolbarClick($event) || clickHandler($event)' (rowDataBound)='rowDataBound($event)' [allowExcelExport]='true' [allowPdfExport]='true'
+             allowTextWrap='true' [textWrapSettings]='wrapSettings' (rowSelected)='rowSelected($event)' [enableHover]='false' (recordDoubleClick)="Doubleclick($event)">
+ 
+             <e-columns >
+                   <e-column field='SlNo' headerText='Sl No' width='60' ></e-column>
+                   <e-column field='Date' headerText='Date' width='100' ></e-column>
+                   <e-column field='VchNo' headerText='Vch No' width='100'  ></e-column>
+                   <e-column field='Particulars' headerText='Narration' width='200' ></e-column>                 
+                   <e-column field='Debit' headerText='Debit'  width='100'></e-column>
+                   <e-column field='Credit' headerText='Credit'  width='80'></e-column>
+                   <e-column field='Balance' headerText='Balance'  width='100'></e-column>
+                   <e-column field='AdjustedBills' headerText='AdjustedBills' width='100'></e-column>
+                   <e-column field='Remarks' headerText='Remarks' width='80' ></e-column>
+               </e-columns>
+ 
+           </ejs-grid> -->
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="clsFindBox" *ngIf='bFindBoxVisible'>
+    <div class="btnClose"><button (click)='bFindBoxVisible = false'>X</button></div>
+    <div class="div_inner">
+        <mat-form-field appearance="outline">
+            <mat-label>Find Text</mat-label>
+            <input matInput type='text' #txtFindBox id="txtFindBox" [(ngModel)]="findText" (input)='keyFind()'>
+            <mat-hint>{{nPageSearchCnt}}</mat-hint>
+        </mat-form-field>
+    </div>
+</div>
+<div fxLayout="column" fxLayoutGap='10px' *ngIf="dataRepTemp && dataRepTemp.length" style="padding-top:4px;">
+    <div fxLayout='row' fxLayoutAlign='space-between center' fxLayoutGap='10px'>
+        <div fxLayoutGap='10px'>
+            <button mat-raised-button color='primary'
+                (click)="fnCommonExportTOExcelFilterColumn(dataRepExcel, strReportHeadName,reportColumns)">Export</button>
+            <button mat-raised-button color='primary'
+                (click)="fnCommonPrintOne(dataRep,BranchName,strReportHeadName,reportColumns)">Print</button>
+            <button *ngIf="ReportPrintType=='LinePrint'" mat-raised-button color='primary'
+                (click)="fnLinePrint(dataRep,BranchName,strReportHeadName,reportColumns)">LinePrint</button>
+        </div>
+        <!--   -->
+        <div fxLayoutGap='20px' class="box_fts">
+            <mat-form-field appearance="outline">
+                <mat-label>Column Hide</mat-label>
+                <mat-select #selecter (selectionChange)='fnColSubmit($event)' placeholder="columns" [formControl]="selectcolumn" multiple>
+                    <mat-select-trigger>
+                        {{selectcolumn.value ? selectcolumn.value[0] : ''}}
+                        <span *ngIf="selectcolumn.value?.length > 1" style="opacity: 0.75; font-size: 0.75em;">
+                            (+{{selectcolumn.value.length - 1}}
+                            {{selectcolumn.value?.length === 2 ? 'other' : 'others'}})
+                        </span>
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let col of tempReportColumns" [value]="col">{{col}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput type='search'>
+                <!-- (keyup)="applyFilter($event.target.value)" -->
+                <mat-icon matSuffix>search</mat-icon>
+                <!-- <mat-hint>Only Order No</mat-hint> -->
+            </mat-form-field>
+
+        </div>
+
+    </div>
+
+    <div fxLayout='row' style="font-size: 11px;">
+        Showing <span>{{scroll.viewPortInfo.startIndex}}</span>
+        - <span>{{scroll.viewPortInfo.endIndex}}</span>
+        of <span>{{dataRep.filteredData?.length}}</span>
+        <!-- <span>({{scroll.viewPortItems?.length}} nodes)</span>
+         <span>[scrollStartPosition: {{scroll.viewPortInfo.scrollStartPosition}}px, scrollEndPosition: {{scroll.viewPortInfo.scrollEndPosition}}px, maxScrollPosition: {{scroll.viewPortInfo.maxScrollPosition}}px ]</span> -->
+    </div>
+
+    <div fxLayout='row' fxLayoutAlign='start center' class="box_fts">
+
+        <virtual-scroller #scroll class="tbl-div mat-elevation-z4" [items]="dataRep.filteredData"
+            [enableUnequalChildrenSizes]="true" (vsChange)='scrollChange($event)'>
+            <table #MatTable class="tblGrid" cdkDropListGroup>
+                <thead #header>
+                    <tr>
+                        <ng-container *ngFor="let col of displayedColumns; let i = index">
+                            <ng-container *ngIf="col.field != 'Flag'">
+                                <th [ngStyle]="{'max-width.px': col.width, 'min-width.px': col.width}"
+                                    (mousedown)="onResizeColumn($event, i)" >{{col.field}}
+                                </th>
+                            </ng-container>
+                        </ng-container>
+                    </tr>
+                </thead>
+
+                <tbody #container>
+                    <tr (dblclick)="fnLedgerRowClick(item)" *ngFor="let item of scroll.viewPortItems; let i = index;"
+                        [ngStyle]="{'background-color': item.Flag=='Red@@@Color' ? '#FFB6C1': ''}">
+
+                        <ng-container *ngFor="let col of displayedColumns">
+                            <ng-container *ngIf="col.field != 'Flag'">
+                                <td [ngStyle]="{'max-width.px': col.width, 'min-width.px': col.width}">
+                                    {{item[col.field]}}</td>
+                            </ng-container>
+                        </ng-container>
+                    </tr>
+                </tbody>
+            </table>
+        </virtual-scroller>
+    </div>
+
+</div>
+
+
+<div *ngIf="PopUp" class="popup mat-elevation-z8">
+    <button mat-mini-fab color="warn" class="closed" (click)='PopUp = false'>X</button>
+    <button mat-menu-item (click)='fnVoucher()'>View Entry</button>
+    <button mat-menu-item (click)='fnVoucherDetailsGet("DateChange")'>Change Date</button>
+    <button mat-menu-item (click)='fnVoucherDetailsGet("BankCharge")'>Bank Charge</button>
+</div>
+
+<div *ngIf="smsPop" class="popupmessage">
+    <div class='popup-inner mat-elevation-z8'>
+        <h1 mat-dialog-title>Message</h1>
+        <mat-form-field style="width:100%">
+            <textarea matInput placeholder="Phone" [value]='Message'></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)='fnSmsSend()'>send sms</button>&nbsp;
+        <button mat-flat-button color="accent" (click)="cancelPop()">cancel</button>
+    </div>
+
+</div>
+
+<div *ngIf="voucherPop" class="popupmessage">
+    <div class='popup-inner  mat-elevation-z8'>
+        <h1 mat-dialog-title>{{ headNamePop }}</h1>
+        <mat-form-field style="width:100%">
+            <input matInput placeholder="Voucher No" [value]='vouchernum' readonly>
+        </mat-form-field>
+        <mat-form-field style="width:100%">
+            <input matInput placeholder="Vocher Date" [value]='voucherdate' readonly>
+        </mat-form-field>
+        <mat-form-field style="width:100%">
+            <input matInput placeholder="Account Head" [value]='vouchaccountHead' readonly>
+        </mat-form-field>
+        <mat-form-field style="width:100%">
+            <input matInput placeholder="Amount" [value]='vouchamount' readonly>
+        </mat-form-field>
+
+        <!-- <mat-form-field *ngIf="chageDate" style="width:100%">
+               <input matInput placeholder="Change Date" [value]='vouchchngeDate'>
+           </mat-form-field> -->
+
+        <mat-form-field *ngIf="chageDate" style="width:100%">
+            <input matInput placeholder="Change Date" (click)="picker.open()" id="Todate" [(ngModel)]=vouchchngeDate
+                [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!chageDate" style="width:100%">
+            <input matInput placeholder="Bank Charge" [value]='BankCharge'>
+        </mat-form-field>
+
+        <mat-checkbox *ngIf="!chageDate" color="primary" [(ngModel)]='bnkchecked'>Head Charge</mat-checkbox>
+        <button mat-raised-button *ngIf="chageDate" color="primary" (click)='fnVoucherDateChangeSave()'>Date
+            Change</button>&nbsp;
+        <button mat-raised-button *ngIf="!chageDate" color="primary" (click)='fnBankChargeSave()'>Save</button>&nbsp;
+        <button mat-flat-button color="accent" (click)="cancelPop()">cancel</button>
+
+    </div>
+
+</div>

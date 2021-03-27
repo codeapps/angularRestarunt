@@ -1,0 +1,317 @@
+::ng-deep.warpper-content {
+    padding: 0px !important;
+  
+  }
+  
+  ::ng-deep app-correction {
+    .wrapper-cont {
+      background: #b8e0b8;
+      border-top: 1px solid #999;
+      border-bottom: 1px solid #999;
+      padding-bottom: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
+      button {
+        background: #9cce9c;
+        width: auto;
+        border: 1px solid #999;
+        height: auto;
+        margin: 20px 0px 0px 0px;
+  
+        &:hover {
+          background: #8cb18c;
+        }
+  
+        &:active {
+          background: #8cb18c;
+        }
+      }
+  
+      .col-wrap {
+        input {
+          border: 1px solid #999;
+          padding: 5px;
+        }
+  
+        select {
+          border: 1px solid #999;
+          padding: 5px;
+        }
+  
+        .search-btn {
+          span {
+            background: #fff;
+            border-right: 1px solid #999;
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
+            padding: 0;
+            text-align: center;
+            user-select: none;
+            cursor: pointer;
+            mat-icon {
+              width: 30px;
+              height: 30px;
+              line-height: 30px;
+              font-size: 19px;
+            }
+          }
+        }
+      }
+    }
+  
+    .mat-form-field {
+      font-size: 13px;
+      width: 100%;
+    }
+  
+    ;
+  
+    .mat-form-field-flex>.mat-form-field-infix {
+      padding: 0.4em 0px !important;
+    }
+  
+    .mat-form-field-label-wrapper {
+      top: -1.5em;
+    }
+  
+    .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+      transform: translateY(-1.1em) scale(.75);
+      width: 133.33333%;
+    }
+  
+    .scautocomplete {
+      position: fixed;
+      z-index: 100;
+      top: 93px;
+    }
+  
+    .tbl-div {
+      width: 100%;
+      height: 295px;
+      overflow: auto;
+      padding: 1px;
+  
+      .tblGrid {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+  
+        thead th {
+          text-align: center;
+          font-size: 12px;
+          border-right-width: 0;
+          border-style: solid;
+          border-left-width: 1px;
+          border-color: #ccc;
+          border-top-width: 0;
+          border-bottom-width: 1px;
+          padding: 6px;
+          background: #673ab7;
+          color: #fff;
+          font-weight: 500;
+          // position: sticky;
+          // top: -2px;
+          z-index: 10;
+          white-space: nowrap;
+        }
+  
+        tbody td {
+          text-align: center;
+          font-size: 12px;
+          border-right-width: 0;
+          border-style: solid;
+          border-left-width: 1px;
+          border-color: #ccc;
+          border-top-width: 0;
+          border-bottom-width: 1px;
+          padding: 0;
+          background: #ebecff;
+          overflow: hidden;
+          white-space: nowrap;
+          z-index: 10;
+  
+          input {
+            width: 100%;
+            border: none;
+            outline: none !important;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 0px 5px 5px;
+          }
+  
+          select {
+            width: 100%;
+            padding: 6px;
+            border: none;
+            outline: none;
+          }
+  
+          input:focus {
+            background-color: #3ab1b754;
+          }
+        }
+      }
+  
+    }
+  
+    .password-popup {
+      position: fixed;
+      left: 0;
+      right: 0;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      width: 400px;
+      z-index: 10;
+      background-color: #fff;
+      height: 160px;
+      padding: 10px;
+      border-radius: 3px;
+      overflow: hidden;
+  
+      .close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+    }
+  
+    .tblPrint {
+      min-width: 100px;
+      max-width: 100px;
+    }
+  
+    .tblPack {
+      min-width: 100px;
+      max-width: 100px;
+    }
+  
+    .tblBatch {
+      min-width: 90px;
+      max-width: 90px;
+    }
+  
+    .tblPurRate {
+      min-width: 60px;
+      max-width: 60px;
+    }
+  
+    .tblSellRate {
+      min-width: 60px;
+      max-width: 60px;
+    }
+  
+    .tblWholeSaleRate {
+      min-width: 60px;
+      max-width: 60px;
+    }
+  
+    .tblSPRateOne {
+      min-width: 80px;
+      max-width: 80px;
+    }
+  
+    .tblSPRateTwo {
+      min-width: 80px;
+      max-width: 80px;
+    }
+  
+    .tblSPRateThree {
+      min-width: 80px;
+      max-width: 80px;
+    }
+  
+    .tblSPRateFour {
+      min-width: 80px;
+      max-width: 80px;
+    }
+  
+    .tblSPRateFive {
+      min-width: 80px;
+      max-width: 80px;
+    }
+  
+    .tblMRP {
+      min-width: 70px;
+      max-width: 70px;
+    }
+  
+    .tblStock {
+      min-width: 70px;
+      max-width: 70px;
+    }
+  
+    .tblAdd {
+      min-width: 70px;
+      max-width: 70px;
+    }
+  
+    .tblMinus {
+      min-width: 70px;
+      max-width: 70px;
+    }
+  
+    .tblSchemeQty {
+      min-width: 100px;
+      max-width: 100px;
+    }
+  
+    .tblSchemeFree {
+      min-width: 100px;
+      max-width: 100px;
+    }
+  
+    .tblBanned {
+      min-width: 100px;
+      max-width: 100px;
+  
+    }
+  
+    .clsCorSupplier {
+      min-width: 200px;
+      max-width: 200px;
+      text-align: left !important;
+      padding-left: 4px;
+    }
+  
+    .tblExpDate {
+      min-width: 90px;
+      max-width: 90px;
+    }
+  
+    .tblProduct {
+      min-width: 220px;
+      height: 28px;
+      text-align: left !important;
+    }
+  
+    .td-group {
+      padding: 2px !important;
+      background-color: #e8deb8 !important;
+      color: #000;
+      text-align: left !important;
+      font-size: 11px !important;
+      padding-left: 11px !important;
+    }
+  
+    .print-popup {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 500px;
+      background-color: #fff;
+      height: 220px;
+      overflow: hidden;
+      padding: 10px;
+      margin: auto;
+  
+      .close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+    }
+  }
+  

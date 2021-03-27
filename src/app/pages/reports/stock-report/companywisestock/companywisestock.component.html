@@ -1,0 +1,82 @@
+<section fxLayout="column" fxLayoutGap='10px'>
+    <div fxLayout="column" *ngIf="!showReport" fxLayoutGap='10px'>
+        <div fxLayout="row" fxLayout.lt-sm="column"
+            ngStyle.gt-sm="border-bottom: 1px solid #ccc; padding-bottom: 10px; ">
+            <div fxLayoutGap='10px' fxLayout.lt-sm="column" fxLayoutAlign.lt-sm='center center'>
+                <mat-radio-group fxLayoutGap='10px' fxLayout.lt-sm='column' [(ngModel)]="selectbills" color='warn'>
+                    <mat-radio-button *ngFor="let tab of tabBills" [value]="tab">{{tab}}</mat-radio-button>
+
+                </mat-radio-group>
+
+            </div>
+
+            <div fxFlex fxLayoutAlign.gt-sm='end start' fxLayoutAlign.lt-sm='center start' fxLayoutGap='10px'>
+
+
+                <button mat-raised-button color='primary' (click)="fnSubmit()">
+                    submit
+                    <mat-icon matPrefix *ngIf="loading">
+                        <mat-spinner diameter='20' color='warn'></mat-spinner>
+                    </mat-icon>
+
+                </button>
+            </div>
+        </div>
+        <!-- //start -->
+        <div fxFlex='100' fxLayout="column" fxLayoutGap='10px'>
+
+            <div fxFlex='100%' class="min_height">
+                <mat-progress-bar mode="indeterminate" *ngIf="processing"></mat-progress-bar>
+            </div>
+
+            <div fxLayout='row' fxLayout.lt-sm='column' fxLayoutGap='10%' fxLayoutAlign.gt-sm='start start'>
+                <div fxLayout='column' fxFlex.lt-sm='100%' fxFlex.gt-sm='45%' class="box_fts">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Search</mat-label>
+                        <input matInput type='search' (keyup)="companyFilter($event.target.value)">
+                        <mat-icon matSuffix>search</mat-icon>
+                        <!-- <mat-hint>Only Order No</mat-hint> -->
+                    </mat-form-field>
+                    <div class="agent_div mat-elevation-z8 ">
+                        <table mat-table [dataSource]="dataSource">
+                            <!-- Checkbox Column -->
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()" color='warn'>
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)" color='warn'>
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <!-- Position Column -->
+                            <ng-container matColumnDef="ManufactureName">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Company Name
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.ManufactureName}} </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                                (click)="selection.toggle(row)">
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showReport" fxLayout="column" fxLayoutGap='10px'>
+        <app-report-content [dataSource]='dataRep' [ReportHeadName]='strReportHeadName'
+            (valueChange)='myPageChange($event)'>
+        </app-report-content>
+    </div>
+</section>

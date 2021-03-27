@@ -1,0 +1,68 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="78" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput (input)="fnsearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Room No</th>
+                            <th>Room Type</th>
+                            <th>Floor Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of rooms">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.Room_No}}</td>
+                            <td>{{item.RoomType_Name}}</td>
+                            <td>{{item.Floor_Name}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="fnBack()">Back</button>
+            <button mat-raised-button color="primary" (click)="fnClear()">Reset</button>
+        </div>
+        <div fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="90" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Room No</mat-label>
+                    <input matInput [(ngModel)]="roomSource.Room_No">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Floor Name</mat-label>
+                    <mat-select [(ngModel)]="roomSource.Floor_Id">
+                        <mat-option *ngFor="let item of floors" [value]="item.FloorId">{{item.FloorName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Room Type</mat-label>
+                    <mat-select [(ngModel)]="roomSource.RoomType_Id">
+                        <mat-option *ngFor="let item of roomTypes" [value]="item.RoomTypeId">{{item.RoomTypeName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</section>

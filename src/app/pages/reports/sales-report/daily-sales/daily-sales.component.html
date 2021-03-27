@@ -1,0 +1,26 @@
+<section class="container">
+    <div *ngIf="createFlag" fxLayout="row" fxFlex="80" fxLayoutGap="20px">
+        <mat-form-field appearance='outline'>
+            <mat-label>Start Date</mat-label>
+            <input  matInput [matDatepicker]="from" [value]="date"
+                (click)="from.open();" [(ngModel)]="fromDate">
+            <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+            <mat-datepicker #from></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance='outline'>
+            <mat-label>Start Date</mat-label>
+            <input  matInput [matDatepicker]="to" [value]="date"
+                (click)="to.open();" [(ngModel)]="toDate">
+            <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+            <mat-datepicker #to></mat-datepicker>
+        </mat-form-field>
+        <div class="btn-submit">
+            <button mat-raised-button color="primary" (click)="getDailyReportTable()">Submit</button>
+        </div>
+    </div>
+    <div *ngIf="!createFlag" fxFlex='100%' fxLayout="column" fxLayoutGap='10px'>
+        <app-report-content [dataSource]='datalist' [ReportHeadName]='strReportHeadName'
+          (valueChange)='myPageChange($event)'>
+        </app-report-content>
+      </div>
+</section>

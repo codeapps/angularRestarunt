@@ -1,0 +1,112 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="80" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fnsearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Item Code</th>
+                            <th>Product Name</th>
+                            <th>Mrp Rate</th>
+                            <th>Selling Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of productLists">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(item)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{item.ItemCode}}</td>
+                            <td>{{item.ProductName}}</td>
+                            <td>{{item.MrpRate}}</td>
+                            <td>{{item.SelRate}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="BackToList()">Back</button>
+            <button mat-raised-button color="primary" (click)="fnClear()">Reset</button>
+        </div>
+        <div fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Item Code</mat-label>
+                    <input #itemcode matInput [(ngModel)]="productSource.ItemCode" (keydown.enter)="name.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Product Name</mat-label>
+                    <input #name matInput [(ngModel)]="productSource.ProductName" (keydown.enter)="mrp.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Mrp Rate</mat-label>
+                    <input #mrp type="number" onwheel="this.blur()" matInput [(ngModel)]="productSource.MrpRate" (keydown.enter)="sel.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Selling Rate</mat-label>
+                    <input #sel type="number" onwheel="this.blur()" matInput [(ngModel)]="productSource.SelRate" (keydown.enter)="pur.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Purchase Rate</mat-label>
+                    <input #pur type="number" onwheel="this.blur()" matInput [(ngModel)]="productSource.PurRate" (keydown.enter)="dis.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Discount</mat-label>
+                    <input #dis type="number" onwheel="this.blur()" matInput [(ngModel)]="productSource.Discount" (keydown.enter)="hsn.focus()">
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="10px">
+                <div fxLayoutGap="30px" class="stock-check">
+                    <mat-slide-toggle [(ngModel)]="productSource.Stock_Check">Stock Check(No/Yes)</mat-slide-toggle>
+                </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Hsn Code</mat-label>
+                    <input #hsn matInput [(ngModel)]="productSource.HsnCode" (keydown.enter)="manufacture.focus()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Manufacture</mat-label>
+                    <mat-select #manufacture [(ngModel)]="productSource.ManufacturingId" >
+                        <mat-option *ngFor="let com of Manufacture" [value]="com.Manufacture_Id" >{{com.Manufacture_Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tax(%)</mat-label>
+                    <mat-select #tax [(ngModel)]="productSource.TaxGroupId" >
+                        <mat-option *ngFor="let tax of taxGroup" [value]="tax.TaxGroupId">{{tax.TaxName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <mat-select #cat [(ngModel)]="productSource.CategoryID">
+                        <mat-option *ngFor="let item of category" [value]="item.CategoryId">{{item.CategoryName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline">
+                    <mat-label>Inclusive Sales</mat-label>
+                    <mat-select >
+                        <mat-option value="Yes">Yes</mat-option>
+                        <mat-option value="No">No</mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+            </div>
+        </div>
+    </div>
+</section>

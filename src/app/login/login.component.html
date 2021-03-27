@@ -1,0 +1,44 @@
+<section fxLayout="row wrap" fxflexFill style="height: 100%;">
+
+  <div fxLayoutAlign='center center' class="login-container">
+    <div class="content">
+      <h2>Fill out the form below to login</h2>
+
+      <div>
+        <form [formGroup]="profileForm" fxLayout='column' fxLayoutAlign='center center'>
+          <input type="text" id="txtUsername" placeholder="Username" formControlName='userName'
+            (keydown.enter)='txtpassword.focus()' autocomplete="off">
+          <input type="password" #txtpassword placeholder="Password" formControlName='password'
+            (keydown.enter)='txtbranch.focus()' autocomplete="off">
+
+          <div class="spinner">
+            <select #txtbranch placeholder="Branch" formControlName='branchId' (keydown.enter)='btnsubmit.focus()'>
+              <option value="0">--select--</option>
+              <option *ngFor="let branch of branchSource" [value]="branch.BranchId">{{branch.BranchName}}</option>
+            </select>
+            <span *ngIf="branchload">
+              <mat-spinner diameter='20' color="warn"></mat-spinner>
+            </span>
+            <!-- branchload -->
+          </div>
+
+          <label>
+            <input type="checkbox">
+            <span>Remember Me</span>
+          </label>
+
+          <button #btnsubmit type="submit" (click)="onSubmit()" [disabled]="loading">
+            Login
+            <span *ngIf="loading" style="position: absolute;">
+              <mat-spinner diameter='20' color="warn"></mat-spinner>
+            </span>
+          </button>
+
+          <p>Forgot Password ?</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+</section>

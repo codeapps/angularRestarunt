@@ -1,0 +1,127 @@
+<section class="container">
+    <div *ngIf="createFlag" fxLayout="column" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnCreate()">Create</button>
+            <mat-form-field appearance='outline'>
+                <mat-label>From Date</mat-label>
+                <input matInput [matDatepicker]="from" placeholder="Choose FromDate" (click)="from.open()"
+                    [(ngModel)]="fromDate" (dateChange)="fnVoucherGets()">
+                <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                <mat-datepicker #from></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance='outline'>
+                <mat-label>To Date</mat-label>
+                <input matInput [matDatepicker]="topicker" placeholder="Choose a ToDate" (click)="topicker.open()"
+                    [(ngModel)]="toDate" (dateChange)="fnVoucherGets()">
+                <mat-datepicker-toggle matSuffix [for]="topicker"></mat-datepicker-toggle>
+                <mat-datepicker #topicker></mat-datepicker>
+            </mat-form-field>
+            <div fxFlex="50" fxLayoutAlign="end center">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Search</mat-label>
+                    <input matInput (input)="fnVoucherGets()" [(ngModel)]="searchText">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>No</th>
+                            <th>Account Name</th>
+                            <th>Address</th>
+                            <th>Voucher Amount</th>
+                            <th>Voucher Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let head of journalVoucherList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(head)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{head.VoucherNo}}</td>
+                            <td>{{head.AccountName}}</td>
+                            <td>{{head.Addr1}}</td>
+                            <td>{{head.VoucherAmt}}</td>
+                            <td>{{head.VoucherDate}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!createFlag" fxLayout="column" fxLayoutGap="30px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="fnBack()">Back</button>
+            <button *ngIf="openingSource.accountHeadId" mat-raised-button color="primary"
+                (click)="fnVoucherDelete()">Cancel Bill</button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxLayout="column" fxFlex="25" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Voucher No</mat-label>
+                    <input matInput disabled>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Head Type</mat-label>
+                    <mat-select [(ngModel)]="openingSource.headaType">
+                        <mat-option value="CUSTOMER">CUSTOMER</mat-option>
+                        <mat-option value="SUPPLIER">SUPPLIER</mat-option>
+                        <mat-option value="AGENT">AGENT</mat-option>
+                        <mat-option value="SALESMAN">SALESMAN</mat-option>
+                        <mat-option value="OTHER">OTHER</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Choose AccountHead</mat-label>
+                    <input matInput (input)="fnSearchAccountHead($event.target.value)"
+                        [(ngModel)]="openingSource.accountHeadName">
+                </mat-form-field>
+                <app-scodeautocomplete *ngIf="selectBankFlag" [fillterData]='filteredOptions'
+                    (valueChange)='fnSelectBankChange($event)' [columnHeader]='colAccHeader' [thHeader]='AccHeader'>
+                </app-scodeautocomplete>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Address</mat-label>
+                    <input matInput disabled [(ngModel)]="openingSource.address">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>Remarks</mat-label>
+                    <input matInput [(ngModel)]="openingSource.remarks">
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" fxFlex="25" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Date</mat-label>
+                    <input matInput [matDatepicker]="voucher" placeholder="Choose VoucherDate" (click)="voucher.open()"
+                        [(ngModel)]="openingSource.voucherDate">
+                    <mat-datepicker-toggle matSuffix [for]="voucher"></mat-datepicker-toggle>
+                    <mat-datepicker #voucher></mat-datepicker>
+                </mat-form-field>
+                <br>
+                <br>
+                <div fxLayout="row" fxLayoutGap="10px" class="crdr-amnt">
+                    <mat-form-field fxFlex="49" appearance='outline'>
+                        <mat-label>Credit -</mat-label>
+                        <input matInput [(ngModel)]="openingSource.credit" id="credit">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49" appearance='outline'>
+                        <mat-label>Debit +</mat-label>
+                        <input matInput [(ngModel)]="openingSource.debit">
+                    </mat-form-field>
+                </div>
+                <mat-form-field appearance='outline'>
+                    <mat-label>SalesMan</mat-label>
+                    <mat-select [(ngModel)]="openingSource.salesmanId">
+                        <mat-option *ngFor="let item of SalesManList" [value]="item.AC_Id">{{item.AC_Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</section>

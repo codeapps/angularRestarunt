@@ -1,0 +1,305 @@
+<section class="container">
+    <div *ngIf="createflag">
+        <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="start start">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+                <button mat-raised-button color="primary" (click)="fnAddRow('')">Add Row</button>
+                <button mat-raised-button color="primary" (click)="fnBack()">Back To List</button>
+                <mat-form-field appearance="outline">
+                    <mat-label>Bill Date</mat-label>
+                    <input matInput [matDatepicker]="billdate" placeholder="Choose FromDate" [(ngModel)]='billDate'
+                        (click)="billdate.open()">
+                    <mat-datepicker-toggle matSuffix [for]="billdate"></mat-datepicker-toggle>
+                    <mat-datepicker #billdate></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Bill No</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <mat-radio-group fxLayoutGap="20px" [(ngModel)]="radioValue" (change)="radioValueChange()">
+                    <mat-radio-button value="ExpenseEntry">EXPENSE ENTRY</mat-radio-button>
+                    <mat-radio-button value="ExpensePurchase">ASSEST PURCHASE</mat-radio-button>
+                </mat-radio-group>
+                <mat-form-field appearance="outline" *ngIf="radioValue == 'ExpensePurchase'">
+                    <mat-label>Supplier</mat-label>
+                    <!-- <mat-label *ngIf="radioValue == 'ExpenseEntry'">Name</mat-label> -->
+                    <input matInput (input)="fngetAccountHead($event.target.value)" [(ngModel)]="AccHeadName">
+                </mat-form-field>
+                <div *ngIf="accountHeadAutoComplete" class="ui-autocomplete auto">
+                    <app-scodeautocomplete [fillterData]='accountHeadSource' (valueChange)='fnAccountHeadChange($event)'
+                        [thHeader]='accHeader' [columnHeader]='accColumn'>
+                    </app-scodeautocomplete>
+                </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Invoice No</mat-label>
+                    <input matInput [(ngModel)]="invNo">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Invoice Date</mat-label>
+                    <input matInput [matDatepicker]="invdate" placeholder="Choose FromDate" [(ngModel)]='invoiceDate'
+                        (click)="invdate.open()">
+                    <mat-datepicker-toggle matSuffix [for]="invdate"></mat-datepicker-toggle>
+                    <mat-datepicker #invdate></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div *ngIf="radioValue == 'ExpensePurchase'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <mat-form-field appearance="outline">
+                    <mat-label>Sales Man</mat-label>
+                    <mat-select [(ngModel)]="salesManId">
+                        <mat-option *ngFor="let item of salesManList" [value]="item.AC_Id">{{item.AC_Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>PayTerms</mat-label>
+                    <mat-select [(ngModel)]="payterms">
+                        <mat-option value="CASH">CASH</mat-option>
+                        <mat-option value="CREDIT">CREDIT</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>PostHead</mat-label>
+                    <input matInput (input)="fnSearchHead($event)" [(ngModel)]="headName">
+                </mat-form-field>
+                <div *ngIf="bankAutoComplete" class="ui-autocomplete auto">
+                    <app-scodeautocomplete [fillterData]='bankFilter' (valueChange)='fnBankChange($event)'
+                        [thHeader]='bankHeader' [columnHeader]='bankColumns'>
+                    </app-scodeautocomplete>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <div fxFlex="100" class="tbl-report report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">Remove</th>
+                            <th style="width: 40px;">No</th>
+                            <th *ngIf="radioValue == 'ExpensePurchase'">Item Name & Packing</th>
+                            <th *ngIf="radioValue == 'ExpenseEntry'">Expense Head</th>
+                            <th [hidden]="radioValue == 'ExpenseEntry'" style="width: 80px;">Qty</th>
+                            <th style="width: 80px;">Rate</th>
+                            <th style="width:40px">Remarks</th>
+                            <th style="width: 80px;">Gst</th>
+                            <th style="width: 80px;">Gst Amount</th>
+                            <th style="width: 80px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of expenseEntrySource; let i = index">
+                            <td><button (click)="removeRow(item)">
+                                    <span class="material-icons">
+                                        delete_sweep
+                                    </span>
+                                </button>
+                            </td>
+                            <td>
+                                <input [value]="i+1">
+                            </td>
+                            <td>
+                                <input #product id="txtProduct{{i}}" [(ngModel)]="item.prodName"
+                                    (input)='fnproductGets($event, i)' (keydown.enter)="qty.focus();qty.select()">
+                            </td>
+                            <td [hidden]="radioValue == 'ExpenseEntry'">
+                                <input #qty id="txtQty{{i}}" [(ngModel)]="item.Qty"
+                                    (input)="fngetTotalByQty(item,i,$event)"
+                                    (keydown.enter)="rate.focus();rate.select()">
+                            </td>
+                            <td>
+                                <input #rate [(ngModel)]="item.rate" (input)="fngetTotalByRate(item,i,$event)"
+                                    (keydown.enter)="fnAddRow(item)">
+                            </td>
+                            <td><button (click)="openDialog(item,i)">
+                                    <span class="material-icons">
+                                        touch_app
+                                    </span>
+                                </button></td>
+                            <td>{{item.taxPerc}}</td>
+                            <td>{{item.taxAmt}}</td>
+                            <td>{{item.Amt}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div *ngIf="expenseAutoComplete" class="ui-autocomplete" [style.top.px]='pTop' [style.left.px]='pLeft'>
+                <app-scodeautocomplete [fillterData]='expenseFilter' (valueChange)='fnExpenseChange($event)'
+                    [thHeader]='expenseHeader' [columnHeader]='expenseColumns'>
+                </app-scodeautocomplete>
+            </div>
+            <div *ngIf="prodAutoComplete" class="ui-autocomplete" [style.top.px]='pTop' [style.left.px]='pLeft'>
+                <app-scodeautocomplete [fillterData]='prodFilter' (valueChange)='fnProductChange($event)'
+                    [thHeader]='prodHeader' [columnHeader]='prodColumns'>
+                </app-scodeautocomplete>
+            </div>
+            <div class="tbl-report mat-elevation-z8">
+                <table class="tbl-footer">
+                    <thead>
+                        <tr>
+                            <th>PurType</th>
+                            <th>Remarks</th>
+                            <th [hidden]="radioValue == 'ExpenseEntry'">Tot Qty</th>
+                            <th>Amount Before</th>
+                            <th>Dis(%)</th>
+                            <th>DisAmount</th>
+                            <th>Amount</th>
+                            <th>Other Charge</th>
+                            <th>Total</th>
+                            <th>ROF
+                                <select [(ngModel)]="ddRof" (change)="fngetFinalTotalAmount()">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select [(ngModel)]="purType" (change)="fngetTotalTax();">
+                                    <option value="LOCAL">LOCAL</option>
+                                    <option value="INTERSTATE">INTERSTATE</option>
+                                </select>
+                            </td>
+                            <td><input [(ngModel)]="remarks"></td>
+                            <td [hidden]="radioValue == 'ExpenseEntry'"><input disabled [(ngModel)]="totQty"></td>
+                            <td><input disabled [(ngModel)]="amtBefore"></td>
+                            <td><input [(ngModel)]="disPerc" (input)="fngetFinalTotalAmount()"></td>
+                            <td><input disabled [(ngModel)]="discAmt"></td>
+                            <td><input disabled [(ngModel)]="amount"></td>
+                            <td><input [(ngModel)]="otherCharge"></td>
+                            <td><input disabled [(ngModel)]="totalAmount"></td>
+                            <td><input disabled [(ngModel)]="rofVal"></td>
+                            <td><input disabled [(ngModel)]="grandTotal"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer-tax">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Tax Details
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            <!-- All Tax Related Details (GST, CESS, ....) -->
+                            <!-- Include Related Other Charges (GST, CESS, Packing, Shipping, ...) -->
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div class="tax-div">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th hidden>id</th>
+                                    <th>Percentage </th>
+                                    <th>Amount</th>
+                                    <th>{{strGlobalTaxName}}Amt</th>
+                                    <th>SGST% </th>
+                                    <th hidden>SGSTAmount</th>
+                                    <th>SGSTGSTAmt</th>
+                                    <th>CGST% </th>
+                                    <th hidden>CGSTAmount</th>
+                                    <th>CGSTGSTAmt</th>
+                                    <th>IGST% </th>
+                                    <th hidden>IGSTAmount</th>
+                                    <th>IGSTGSTAmt</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <ng-container *ngFor="let tax of jsonTaxData; let i = index">
+                                    <tr>
+                                        <td hidden>{{tax.TaxId}}</td>
+                                        <td>{{tax.TaxPercent}}</td>
+                                        <td>{{tax.Amount | number:'1.2-2'}}</td>
+                                        <td>{{tax.TaxAmount | number:'1.2-2'}}</td>
+                                        <td>{{tax.SGSTTaxPers }}</td>
+                                        <td hidden>{{tax.SGSTAmount }}</td>
+                                        <td>
+                                            {{tax.SGSTTaxAmount | number:'1.2-2'}}
+                                        </td>
+                                        <td>{{tax.CGSTTaxPers }}</td>
+                                        <td hidden>{{tax.CGSTAmount | number:'1.2-2'}}</td>
+                                        <td>
+                                            {{tax.CGSTTaxAmount | number:'1.2-2'}}
+                                        </td>
+                                        <td>{{tax.IGSTTaxPers }}</td>
+                                        <td hidden>{{tax.IGSTAmount | number:'1.2-2'}}</td>
+                                        <td>
+                                            {{tax.IGSTTaxAmount | number:'1.2-2'}}
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+    </div>
+
+    <div *ngIf="!createflag">
+        <div fxLayout="column" fxLayoutGap="20px">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="create()">Create</button>
+                <mat-form-field appearance="outline">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="from" placeholder="Choose FromDate" [(ngModel)]='fromDate'
+                        (click)="from.open()" (dateChange)="fngetExpenseList()">
+                    <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                    <mat-datepicker #from></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="to" placeholder="Choose FromDate" [(ngModel)]='toDate'
+                        (click)="to.open()" (dateChange)="fngetExpenseList()">
+                    <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+                    <mat-datepicker #to></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Search here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fngetExpenseList()">
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+                <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Edit</th>
+                                <th>No</th>
+                                <th>Bill No</th>
+                                <th>Bill Date</th>
+                                <th>Amount</th>
+                                <th>Customer</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of expenseEntryList;let i = index">
+                                <td>
+                                    <button mat-button (click)="fnAnchorClick(item)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </td>
+                                <td>{{i+1}}</td>
+                                <td>{{item.BillNo}}</td>
+                                <td>{{item.BillDate}}</td>
+                                <td>{{item.Amount}}</td>
+                                <td>{{item.Customer}}</td>
+                                <td>{{item.EntryType}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

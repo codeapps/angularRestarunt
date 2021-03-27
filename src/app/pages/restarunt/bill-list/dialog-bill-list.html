@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>CustomerName&nbsp;<b *ngIf="billMainList">{{billMainList.Issues_CustName}}</b></h2>
+
+<div mat-dialog-content fxLayout="column" fxLayoutGap='10px'>
+    
+    <h5>Tablename&nbsp;<b *ngIf="billMainList">{{billMainList.TableDetails_Name}}</b></h5>
+
+    <div fxLayout="row" class="mat-elevation-z8 table-bill_list">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Product Name</th>
+                    <th>Qty</th>
+                    <th>Tax(%)</th>
+                    <th>Dis(%)</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of billSubList; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{product.ProductName}}</td>
+                    <td>{{product.IssuesSub_Qty}}</td>
+                    <td>{{product.IssuesSub_TaxPercent}}</td>
+                    <td>{{product.Discount}}</td>
+                    <td>{{product.IssuesSub_ActualRate | number : '1.3-3'}}</td>
+                    <td>{{product.IssuesSub_Amt | number : '1.3-3' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="billMainList" fxLayout="row" fxLayoutAlign='end center' style="padding: 10px; border: 1px solid #ccc;">
+        Rs.&nbsp;<span>{{billMainList.Issues_Total}}</span>
+    </div>
+</div>
+
+<mat-dialog-actions fxLayoutAlign='end start'>
+    <button mat-button (click)="fnAssign()">Assign</button>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>print</button> -->
+  </mat-dialog-actions>

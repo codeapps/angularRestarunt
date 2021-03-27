@@ -1,0 +1,59 @@
+<section class="container">
+    <div *ngIf="createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <div fxFlex="20"><button mat-raised-button color="primary" (click)="fnCreate()">Create</button></div>
+            <div fxFlex="80" fxLayoutAlign="end start">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput (input)="fnsearchText($event)">
+                </mat-form-field>
+            </div>
+        </div>
+        <div>
+            <div fxFlex="99" class="tbl-report mat-elevation-z8">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Category Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let category of categoryList">
+                            <td>
+                                <button mat-button (click)="fnAnchorClick(category)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </td>
+                            <td>{{category.CategoryName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!createFlag">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnSave()">Save</button>
+            <button mat-raised-button color="primary" (click)="fnBackToList()">Back</button>
+            <button mat-raised-button color="primary">Reset</button>
+        </div>
+        <div fxLayoutGap="10px" class="entry-box">
+            <div fxLayout="column" fxFlex="90" fxLayoutGap="10px">
+                <mat-form-field appearance='outline'>
+                    <mat-label>Category Name</mat-label>
+                    <input matInput [(ngModel)]="categorySource.CategoryName">
+                </mat-form-field>
+                <mat-form-field appearance='outline'>
+                    <mat-label>CategoryHead Name</mat-label>
+                    <mat-select [(ngModel)]="categorySource.CategoryHeadId">
+                        <mat-option *ngFor="let item of categoryHeadList" [value]="item.CategoryHeadId">
+                            {{item.CategoryHeadName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+</section>

@@ -1,0 +1,31 @@
+.container {
+    margin-top: 20px;
+    margin-left: 20px;
+  
+    .tbl-report {
+  
+      table {
+        th {
+          background: #673ab7;
+          color: #fff;
+        }
+      }
+    }
+    .report{
+        table {
+            th {
+              background:none;
+              color: black;
+            }
+            input {
+                width: 100%;
+                border: none;
+                outline: none !important;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 5px 0px 5px 5px;
+              }
+          }
+    }
+  }
+  

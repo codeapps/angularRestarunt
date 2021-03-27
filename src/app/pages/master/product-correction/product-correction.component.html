@@ -1,0 +1,193 @@
+<section class="container">
+
+    <div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <button mat-raised-button color="primary" (click)="fnToggle($event)">
+                <mat-icon matSuffix>filter_list</mat-icon>
+                Filter
+            </button>
+            <button mat-raised-button color="primary" [disabled]="[selection.selected.length > 0 ? 'false': 'true']"
+                (click)="fnSave()">Save</button>
+            <div fxFlex style="margin-left: 10px;">
+                <button [matMenuTriggerFor]="menu" mat-raised-button color='primary'>Column Hide</button>
+                <mat-menu #menu="matMenu">
+                    <mat-select #selecter (selectionChange)='fnColSubmit($event)' placeholder="columns"
+                        [formControl]="selectcolumn" multiple>
+                        <mat-select-trigger>
+                            {{selectcolumn.value ? selectcolumn.value[0].name : ''}}
+                            <span *ngIf="selectcolumn.value?.length > 1" style="opacity: 0.75; font-size: 0.75em;">
+                                (+{{selectcolumn.value.length - 1}}
+                                {{selectcolumn.value?.length === 2 ? 'other' : 'others'}})
+                            </span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let col of tempReportColumns" [value]="col">{{col.name}}</mat-option>
+                    </mat-select>
+                </mat-menu>
+            </div>
+            <div fxFlex="80" fxLayoutAlign="end end">
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Here..</mat-label>
+                    <input matInput [(ngModel)]="searchText" (input)="fnSearchtext()">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="filter-div mat-elevation-z8" *ngIf="filterFlag">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Filter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Taxes</td>
+                        <td>
+                            <select class="tblTax" [(ngModel)]="filterTaxId">
+                                <option value="0">--Select--</option>
+                                <option *ngFor="let tax of taxGroup;" [value]="tax.TaxGroupId">
+                                    {{tax.TaxName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Category Head</td>
+                        <td>
+                            <select [(ngModel)]="filterCategoryHeadId" (change)='fnChangeCategoryHead()'>
+                                <option value="0">--Select--</option>
+                                <option *ngFor="let catHead of categoryHeadList" [value]="catHead.CategoryHeadId">
+                                    {{catHead.CategoryHeadName}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Category</td>
+                        <td>
+                            <select [(ngModel)]="filterCategoryId">
+                                <option value="0">--Select--</option>
+                                <option *ngFor="let Category of TempcategoryList" [value]="Category.CategoryID">
+                                    {{Category.CategoryName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>Manufacture</td>
+                        <td>
+                            <select [(ngModel)]="filterManufactureId">
+                                <option value="0">--Select--</option>
+                                <option *ngFor="let product of allManufactureList;" [value]="product.Manufacture_Id">
+                                    {{product.Manufacture_Name}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: right;">
+                <button mat-button color='warn' (click)="fnResetFilter()">Reset</button>
+                &nbsp;
+                <button mat-button color='primary' (click)="fnApply()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div>
+        <virtual-scroller *ngIf="dataRep && dataRep.filteredData.length; " class='tbl-reported mat-elevation-z8' #scroll
+            [items]="dataRep.filteredData">
+            <table>
+                <thead #header>
+                    <tr>
+                        <th *ngFor="let col of displayedColumn;let i=index" (mousedown)="onResizeColumn($event,i)">
+                            {{col.name}}</th>
+                    </tr>
+                </thead>
+                <tbody #container>
+                    <tr *ngFor="let item of scroll.viewPortItems;let i = index"
+                        [style.background]="selection.isSelected(item)?'yellow':''"
+                        [ngClass]="{'highlight': selectedRowIndex == i}">
+                        <ng-container *ngFor="let col of displayedColumn">
+                            <td class="td-hide" *ngIf="col.name == '.'" [ngStyle]="{'width': col.width}">
+                                <!-- <mat-icon>keyboard_arrow_right</mat-icon> -->
+                            </td>
+                            <td *ngIf="col.name == 'SlNo'" [ngStyle]="{'min-width': col.width}">{{i+1}}</td>
+                            <td *ngIf="col.name == 'Save'" [ngStyle]="{'min-width': col.width}">
+                                <mat-checkbox (click)="$event.stopPropagation();"
+                                    (change)="$event ? selection.toggle(item) : null;"
+                                    [checked]="selection.isSelected(item)" color='warn'></mat-checkbox>
+                            </td>
+                            <td *ngIf="col.name == 'ProductName'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.ProductName" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'ItemCode'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.ItemCode" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'HsnCode'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.HsnCode" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'Category'" [ngStyle]="{'min-width': col.width}">
+                                <select [(ngModel)]="item.CategoryId" (change)='selection.select(item)'>
+                                    <option *ngFor="let cat of categoryList" [value]='cat.CategoryId'>
+                                        {{cat.CategoryName}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td *ngIf="col.name == 'PurRate'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.PurRate" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'SellingRate'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.SelRate" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'Mrp'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.MrpRate" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'Discount'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.Discount" (keyup)='fnSelected($event, item)' />
+                            </td>
+                            <td *ngIf="col.name == 'Manufacture'" [ngStyle]="{'min-width': col.width}">
+                                <select [(ngModel)]="item.ManufacturingId" (change)='selection.select(item)'>
+                                    <option *ngFor="let manu of allManufactureList" [value]='manu.Manufacture_Id'>
+                                        {{manu.Manufacture_Name}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td *ngIf="col.name == 'Tax'" [ngStyle]="{'min-width': col.width}">
+                                <select [(ngModel)]="item.TaxGroupId" (change)='selection.select(item)'>
+                                    <option *ngFor="let tax of taxGroup" [value]='tax.TaxGroupId'>
+                                        {{tax.TaxName}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td *ngIf="col.name == 'Image'" [ngStyle]="{'min-width': col.width}">
+                                <input [(ngModel)]="item.ImgeLoc" (click)="getHoverImage($event,i)"
+                                    (mouseleave)='imagePreview = false' readonly />
+                            </td>
+                            <td *ngIf="col.name == 'ImageOption'" [ngStyle]="{'min-width': col.width}">
+                                <button style="background: green;color: #fff;margin-right: 5px;"
+                                    (click)='imgFile.click()'>Add</button>
+                                <button style="background: red;color: #fff;" (click)="fnRemove(i,item)">Remove</button>
+                                <input #imgFile type="file" name="fileUpload" multiple="multiple" accept="image/*"
+                                    style="display:none;" (change)="fnChangeFiles(imgFile.files,i,item)" />
+                            </td>
+                        </ng-container>
+                    </tr>
+                </tbody>
+            </table>
+        </virtual-scroller>
+        <div *ngIf="imagePreview" class="div-imageview mat-elevation-z4">
+            <div fxHide.gt-sm='true' class="close">
+                <button mat-icon-button (click)="imagePreview = false" color='default'>
+                    <mat-icon color='warn'>close</mat-icon>
+                </button>
+            </div>
+            <img [src]="imgURL" height="200" *ngIf="imgURL">
+        </div>
+    </div>
+
+
+</section>
